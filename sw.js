@@ -1,4 +1,4 @@
-const CACHE='exam-radar-v10';
+const CACHE='exam-radar-v11';
 const ASSETS=['./','index.html','css/style.css','assets/shinyway-logo.png','assets/shinyway-building.jpg','assets/shinyway-building-mobile.jpg','assets/shinyway-info-template.jpg','js/app.js','js/excelLoader.js','js/dateUtils.js','js/dataNormalizer.js','js/radarEngine.js','js/templateEngine.js','js/posterEngine.js','js/inspirationLibrary.js','js/calendar.js','js/storage.js','js/ui.js','lib/xlsx.full.min.js','manifest.webmanifest','小语种考试营销雷达_数据模板_V2.xlsx'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
