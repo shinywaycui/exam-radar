@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f7f8f3">
+  <meta name="description" content="面向小语种课程顾问的考试节点与营销行动工作台">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>新通小语种考试雷达</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><img class="brand-logo" src="assets/shinyway-logo.png" alt="新通教育"><div class="brand-product"><strong>新通小语种考试雷达</strong><small>课程顾问工作台</small></div></div>
+    <nav id="sideNav"></nav>
+    <div class="privacy-note">数据仅保存在本机浏览器</div>
+  </aside>
+  <main>
+    <header class="topbar">
+      <div><p class="eyebrow">LANGUAGE EXAM RADAR</p><h1 id="pageTitle">小语种考试雷达</h1></div>
+      <div class="top-actions"><div class="data-status" id="dataStatus"></div><button class="share-trigger" id="shareTrigger" type="button" title="分享雷达" aria-label="分享雷达"><span>↗</span><b>分享</b></button><button class="admin-trigger" id="adminTrigger" type="button" title="管理员入口" aria-label="管理员入口">⌁</button></div>
+    </header>
+    <div id="app" class="content"></div>
+  </main>
+  <nav id="mobileNav" class="mobile-nav"></nav>
+  <input id="fileInput" type="file" accept=".xlsx,.xls" hidden>
+  <div id="modalRoot"></div><div id="toast" class="toast"></div>
+  <script src="lib/xlsx.full.min.js"></script>
+  <script src="js/dateUtils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/dataNormalizer.js"></script>
+  <script src="js/excelLoader.js"></script>
+  <script src="js/radarEngine.js"></script>
+  <script src="js/templateEngine.js"></script>
+  <script src="js/inspirationLibrary.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

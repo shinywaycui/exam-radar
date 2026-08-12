@@ -1,0 +1,8 @@
+# 排除 Next.js 构建目录（非网站运行时资源，约 488MB）
+deploy-site/
+
+# macOS 元数据
+.DS_Store
+
+# 项目说明文档（非网站运行时所需）
+README.md

@@ -1,0 +1,11 @@
+{
+  "name": "小语种考试营销雷达",
+  "short_name": "考试雷达",
+  "description": "考试节点、营销机会与顾问行动工作台",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f8f9ff",
+  "theme_color": "#686fda",
+  "orientation": "portrait-primary",
+  "lang": "zh-CN"
+}
