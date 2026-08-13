@@ -9,12 +9,16 @@ const sourceName = path.basename(sourcePath);
 const outputPath = path.join(root, 'js', 'localExcelData.js');
 const workbook = XLSX.read(fs.readFileSync(sourcePath), { type: 'buffer', cellDates: true });
 const raw = {};
+const pad = value => String(value).padStart(2, '0');
+const serializeCell = value => value instanceof Date && !Number.isNaN(value)
+  ? `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())}`
+  : value;
 
 for (const sheetName of workbook.SheetNames) {
   raw[sheetName] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
     defval: '',
     raw: true,
-  });
+  }).map(row => Object.fromEntries(Object.entries(row).map(([key, value]) => [key, serializeCell(value)])));
 }
 
 const stat = fs.statSync(sourcePath);
