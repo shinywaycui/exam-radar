@@ -6,3 +6,6 @@ deploy-site/
 
 # 项目说明文档（非网站运行时所需）
 README.md
+
+# 本地生成的 Excel 交付和预览文件
+outputs/

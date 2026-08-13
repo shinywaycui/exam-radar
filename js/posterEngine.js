@@ -6,7 +6,7 @@
   function wrap(c,text,x,y,w,lineHeight,max=99,align='left'){const chars=String(text||'').split(''),out=[];let line='';for(const ch of chars){if(ch==='\n'){out.push(line);line='';continue}if(c.measureText(line+ch).width>w&&line){out.push(line);line=ch}else line+=ch}if(line)out.push(line);c.textAlign=align;out.slice(0,max).forEach((v,i)=>c.fillText(v,x,y+i*lineHeight));c.textAlign='left';return Math.min(out.length,max)*lineHeight}
   function fitTitle(c,text,x,y,w,maxLines=3){let size=66;while(size>=44){c.font=`900 ${size}px "PingFang SC","Microsoft YaHei",sans-serif`;const chars=String(text).split('');let lines=1,line='';for(const ch of chars){if(c.measureText(line+ch).width>w&&line){lines++;line=ch}else line+=ch}if(lines<=maxLines)return wrap(c,text,x,y,w,size*1.18,maxLines,'center');size-=4}return wrap(c,text,x,y,w,54,maxLines,'center')}
   function rows(s){return[['报名注册开始',s.registrationStart],['正式报名开始',s.applicationStart],['正式报名截止',s.applicationDeadline],['考试日期',s.examDate],['预计出分日期',s.scoreDate]].filter(v=>v[1])}
-  async function create(event){const s=event.session||{},base=await loadImage('assets/shinyway-info-template.jpg'),canvas=document.createElement('canvas');canvas.width=base.naturalWidth||1125;canvas.height=base.naturalHeight||2656;const c=canvas.getContext('2d'),red='#c9002d',ink='#141414';c.drawImage(base,0,0,canvas.width,canvas.height);
+  async function create(event){const s=event.session||{},base=await loadImage(window.POSTER_TEMPLATE_DATA||'assets/shinyway-info-template.jpg'),canvas=document.createElement('canvas');canvas.width=base.naturalWidth||1125;canvas.height=base.naturalHeight||2656;const c=canvas.getContext('2d'),red='#c9002d',ink='#141414';c.drawImage(base,0,0,canvas.width,canvas.height);
     // 原模板只替换日期牌内的数字。
     c.fillStyle='#ec635c';c.fillRect(774,267,112,144);const d=new Date();c.fillStyle='#fff';c.textAlign='center';c.font='500 52px sans-serif';c.fillText(String(d.getDate()).padStart(2,'0'),830,326);c.fillStyle='rgba(255,255,255,.65)';c.fillRect(790,346,80,2);c.fillStyle='#fff';c.font='700 27px sans-serif';c.fillText(`${String(d.getMonth()+1).padStart(2,'0')}月`,830,386);c.textAlign='left';
     // 覆盖原模板白色正文，仅动态填入本场考试数据。
@@ -17,9 +17,11 @@
     c.font='800 34px "PingFang SC","Microsoft YaHei",sans-serif';c.fillText('四、考点信息',95,y);y+=57;c.font='500 29px "PingFang SC","Microsoft YaHei",sans-serif';y+=wrap(c,s.region||'请以官方最新公布的考点信息为准。',108,y,860,43,3);y+=38;
     if(y<1960){c.font='800 34px "PingFang SC","Microsoft YaHei",sans-serif';c.fillText('五、温馨提示',95,y);y+=57;c.font='500 29px "PingFang SC","Microsoft YaHei",sans-serif';c.fillText('请及时关注官方通知，合理安排报名与备考时间。',108,y);y+=46;c.fillText('考试时间及考点如有调整，请以官方最新信息为准。',108,y)}
     return canvas}
-  function blob(canvas){return new Promise(resolve=>canvas.toBlob(resolve,'image/png',.96))}
-  async function copy(canvas){if(!navigator.clipboard||typeof ClipboardItem==='undefined')throw new Error('IMAGE_CLIPBOARD_UNSUPPORTED');const b=await blob(canvas);await navigator.clipboard.write([new ClipboardItem({'image/png':b})])}
-  async function download(canvas,event){const b=await blob(canvas),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`${event.examName}-${event.sessionName||event.eventType}-新通快讯.png`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-  async function share(canvas,event){const b=await blob(canvas),file=new File([b],`${event.examName}-新通快讯.png`,{type:'image/png'});if(navigator.canShare?.({files:[file]}))return navigator.share({files:[file],title:`${event.examName}新通快讯`});download(canvas,event)}
-  window.PosterEngine={create,copy,download,share};
+  function safeName(v){return String(v||'考试快讯').replace(/[\\/:*?"<>|]/g,'-')}
+  function fileName(event){return`${safeName(event.examName)}-${safeName(event.sessionName||event.eventType)}-新通快讯.png`}
+  function dataUrl(canvas){return canvas.toDataURL('image/png',1)}
+  function blob(canvas){return new Promise((resolve,reject)=>{try{canvas.toBlob(b=>b?resolve(b):reject(new Error('图片转换失败')),'image/png',.96)}catch(e){reject(e)}})}
+  async function download(canvas,event){const a=document.createElement('a');a.href=dataUrl(canvas);a.download=fileName(event);a.style.display='none';document.body.appendChild(a);a.click();a.remove();return'downloaded'}
+  async function share(canvas,event){const b=await blob(canvas),name=`${safeName(event.examName)}-新通快讯.png`,file=new File([b],name,{type:'image/png'});if(navigator.share&&navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:`${event.examName}新通快讯`});return'shared'}await download(canvas,event);return'downloaded'}
+  window.PosterEngine={create,download,share,dataUrl,fileName};
 })();

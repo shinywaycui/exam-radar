@@ -5,6 +5,7 @@
     rules:{ruleId:['规则ID'],eventType:['节点类型'],startDays:['起始天数'],endDays:['结束天数'],marketingStage:['营销阶段'],radarLevel:['雷达等级'],monthlyFocus:['本月是否重点'],advisorActions:['顾问建议动作'],generateWechat:['生成企微提醒'],generateMoments:['生成朋友圈'],priority:['优先级']},
     wechat:{templateId:['模板ID'],eventType:['适用节点'],marketingStage:['营销阶段'],title:['标题模板'],body:['正文模板'],enabled:['是否启用']},
     moments:{templateId:['模板ID'],eventType:['适用节点'],marketingStage:['营销阶段'],copyType:['文案类型'],title:['标题模板'],body:['正文模板'],enabled:['是否启用']},
+    invitations:{contentId:['内容ID','邀约ID'],language:['语种'],examId:['考试ID','考试iD'],examName:['考试名称'],eventType:['适用节点'],startDays:['起始天数'],endDays:['结束天数'],contentType:['内容类型'],title:['标题'],knowledge:['知识点/谈资','内容正文'],inviteScript:['邀约话术'],audience:['适用人群'],sourceNote:['来源/备注','来源'],priority:['优先级'],enabled:['是否启用']},
     dictionaries:{type:['配置类型'],value:['配置值'],sort:['排序'],description:['说明']}
   };
   const clean=v=>typeof v==='string'?v.trim():v;
@@ -15,10 +16,10 @@
   function fuzzy(a,b){a=standardName(a);b=standardName(b);return!!a&&!!b&&(a.includes(b)||b.includes(a))}
   function linkBasics(data){data.sessions.forEach(s=>{s.basic=data.basics.find(b=>b.examId&&s.examId&&b.examId===s.examId)||data.basics.find(b=>b.language===s.language&&standardName(b.examName)===standardName(s.examName))||data.basics.find(b=>b.language===s.language&&fuzzy(b.examName,s.examName))||null})}
   function normalize(raw,meta={}){
-    const data={basics:normalizeRows(raw['考试基础信息']||[],'basics'),sessions:normalizeRows(raw['年度考试场次']||[],'sessions'),rules:normalizeRows(raw['今日营销规则']||[],'rules'),wechat:normalizeRows(raw['企微提醒模板']||[],'wechat'),moments:normalizeRows(raw['朋友圈模板']||[],'moments'),dictionaries:normalizeRows(raw['字典配置']||[],'dictionaries'),meta};
+    const data={basics:normalizeRows(raw['考试基础信息']||[],'basics'),sessions:normalizeRows(raw['年度考试场次']||[],'sessions'),rules:normalizeRows(raw['今日营销规则']||[],'rules'),wechat:normalizeRows(raw['企微提醒模板']||[],'wechat'),moments:normalizeRows(raw['朋友圈模板']||[],'moments'),invitations:normalizeRows(raw['考试邀约内容']||[],'invitations'),dictionaries:normalizeRows(raw['字典配置']||[],'dictionaries'),meta};
     data.basics=data.basics.filter(x=>x.examId||x.examName).filter(x=>isEnabled(x.enabled));
     data.sessions=data.sessions.filter(x=>x.recordId||x.examName).filter(x=>isEnabled(x.enabled));
-    data.rules=data.rules.filter(x=>x.eventType);data.wechat=data.wechat.filter(x=>x.templateId&&isEnabled(x.enabled));data.moments=data.moments.filter(x=>x.templateId&&isEnabled(x.enabled));
+    data.rules=data.rules.filter(x=>x.eventType);data.wechat=data.wechat.filter(x=>x.templateId&&isEnabled(x.enabled));data.moments=data.moments.filter(x=>x.templateId&&isEnabled(x.enabled));data.invitations=data.invitations.filter(x=>x.contentId&&(x.knowledge||x.inviteScript)).filter(x=>isEnabled(x.enabled));
     linkBasics(data);return data;
   }
   window.DataNormalizer={normalize,isEnabled,standardName};
