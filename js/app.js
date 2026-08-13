@@ -10,7 +10,7 @@
     findEvent(id){return RadarEngine.buildExamEvents(this.data.sessions,this.data.rules,this.today).find(e=>e.eventId===id)},
     showMoments(id){const e=this.findEvent(id);if(!e)return;UI.modal(`<h2>${UI.esc(e.examName)} · 朋友圈文案</h2>${UI.momentsCard(this.data,e)}`)},
     async share(){if(location.protocol==='file:')return this.toast('请发布为网址后再分享给其他人');const payload={title:'新通小语种考试雷达',text:'查看近期考试节点、全年考试日历与顾问行动建议',url:location.href};try{if(navigator.share)await navigator.share(payload);else await this.copy(location.href,'分享链接已复制')}catch(e){if(e.name!=='AbortError')this.toast('暂时无法分享，请复制浏览器地址')}},
-    async init(){try{if(location.protocol==='file:'&&window.LOCAL_EXCEL_DATA){const p=window.LOCAL_EXCEL_DATA;this.data=DataNormalizer.normalize(p.raw,{fileName:p.fileName,importedAt:p.sourceModifiedAt,localBundled:true})}else{this.data=await RadarStorage.get();if(!this.data)this.data=await ExcelLoader.loadHostedDefault()}}catch(e){console.warn(e)}if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});this.render()}
+    async init(){try{if(window.LOCAL_EXCEL_DATA){const p=window.LOCAL_EXCEL_DATA;this.data=DataNormalizer.normalize(p.raw,{fileName:p.fileName,importedAt:p.sourceModifiedAt,localBundled:location.protocol==='file:',readOnly:location.protocol!=='file:'})}else if(location.protocol!=='file:')this.data=await ExcelLoader.loadHostedDefault();else this.data=await RadarStorage.get()}catch(e){console.warn(e)}if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});this.render()}
   };
   window.App=App;
   document.addEventListener('click',e=>{const el=e.target.closest('button,a');if(!el)return;
