@@ -21,7 +21,10 @@
   function fileName(event){return`${safeName(event.examName)}-${safeName(event.sessionName||event.eventType)}-新通快讯.png`}
   function dataUrl(canvas){return canvas.toDataURL('image/png',1)}
   function blob(canvas){return new Promise((resolve,reject)=>{try{canvas.toBlob(b=>b?resolve(b):reject(new Error('图片转换失败')),'image/png',.96)}catch(e){reject(e)}})}
-  async function download(canvas,event){const a=document.createElement('a');a.href=dataUrl(canvas);a.download=fileName(event);a.style.display='none';document.body.appendChild(a);a.click();a.remove();return'downloaded'}
-  async function share(canvas,event){const b=await blob(canvas),name=`${safeName(event.examName)}-新通快讯.png`,file=new File([b],name,{type:'image/png'});if(navigator.share&&navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:`${event.examName}新通快讯`});return'shared'}await download(canvas,event);return'downloaded'}
-  window.PosterEngine={create,download,share,dataUrl,fileName};
+  const isMobile=()=>/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  const isWechat=()=>/MicroMessenger/i.test(navigator.userAgent);
+  async function imageFile(canvas,event){const b=await blob(canvas),name=fileName(event);return{blob:b,file:new File([b],name,{type:'image/png'}),name}}
+  async function download(canvas,event){const pack=await imageFile(canvas,event);if(isMobile()&&navigator.share&&navigator.canShare?.({files:[pack.file]})){await navigator.share({files:[pack.file],title:`${event.examName}新通快讯`});return'share-save'}const url=URL.createObjectURL(pack.blob),a=document.createElement('a');a.href=url;a.download=pack.name;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);return isMobile()?'opened':'downloaded'}
+  async function share(canvas,event){const pack=await imageFile(canvas,event);if(navigator.share&&navigator.canShare?.({files:[pack.file]})){await navigator.share({files:[pack.file],title:`${event.examName}新通快讯`,text:`${event.examName}考试信息`});return'shared'}const url=URL.createObjectURL(pack.blob);window.open(url,'_blank','noopener');setTimeout(()=>URL.revokeObjectURL(url),120000);return isWechat()?'wechat-opened':'opened'}
+  window.PosterEngine={create,download,share,dataUrl,fileName,blob,isMobile,isWechat};
 })();
