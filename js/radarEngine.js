@@ -14,9 +14,8 @@
   function sortRadar(a,b){return(Number(b.daysUntil===0)-Number(a.daysUntil===0))||(b.priority||0)-(a.priority||0)||Math.abs(a.daysUntil)-Math.abs(b.daysUntil)||a._order-b._order}
   function getTodayRadar(data,today=new Date()){
     const events=buildExamEvents(data.sessions,data.rules,today),todayEvents=events.filter(e=>e.daysUntil===0),todayUpdates=data.sessions.filter(s=>DateUtils.isSameDay(s.infoUpdatedAt,today)).map((s,i)=>({eventId:`${s.recordId}-update`,eventType:'信息更新时间',eventDate:DateUtils.dateKey(today),daysUntil:0,session:s,examName:s.examName,language:s.language,sessionName:s.sessionName,updateType:s.updateType,updateNote:s.updateNote,_order:i}));
-    // “本月关注”取决于今天是否命中 Excel 规则，而不是场次或节点本身的月份。
-    // 例如 9 月报名节点在 8 月进入 8—15 天营销期，也应出现在 8 月雷达。
-    const monthlyFocus=events.filter(e=>e.rule&&DataNormalizer.isEnabled(e.rule.monthlyFocus)).sort(sortRadar);
+    // 本月实际发生的考试节点必须进入关注列表；同时保留规则命中的跨月营销机会。
+    const month=DateUtils.parseExcelDate(today),monthEvents=events.filter(e=>e.year===month.getFullYear()&&e.month===month.getMonth()+1).map(e=>({...e,marketingStage:e.marketingStage||'本月考试节点',radarLevel:e.radarLevel||'📌',advisorActions:e.advisorActions||({报名注册开始:'核对报名注册信息；提醒相关学员准备资料',正式报名开始:'提醒目标学员及时报名；确认报考级别与考点',正式报名截止:'排查尚未报名学员；提醒报名截止时间',考试日期:'发送考前关怀；提醒证件与入场安排',预计出分日期:'关注成绩发布；准备成绩复盘与后续规划'}[e.eventType]||'关注本月考试节点')})),ruleFocus=events.filter(e=>e.rule&&DataNormalizer.isEnabled(e.rule.monthlyFocus)),monthlyFocus=[...monthEvents,...ruleFocus].filter((e,i,a)=>a.findIndex(x=>x.eventId===e.eventId)===i).sort(sortRadar);
     const relevant=events.filter(e=>e.rule&&(Math.abs(e.daysUntil)<=31||e.daysUntil===0)).sort(sortRadar),highPriority=relevant.filter(e=>DataNormalizer.isEnabled(e.rule.generateWechat)).slice(0,8);
     const upcomingEvents=events.filter(e=>e.daysUntil>0&&e.daysUntil<=7).sort(sortRadar),actionSource=[...todayEvents.filter(e=>e.rule),...highPriority];
     const momentsRecommendations=relevant.filter(e=>DataNormalizer.isEnabled(e.rule.generateMoments)).slice(0,3);
