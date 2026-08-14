@@ -1,11 +1,11 @@
 (function(){
   const flags={日语:'🇯🇵',韩语:'🇰🇷',德语:'🇩🇪',法语:'🇫🇷',西班牙语:'🇪🇸',意大利语:'🇮🇹',俄语:'🇷🇺'};
-  const nodeLabels={'报名注册开始':'即将开始报名注册','正式报名开始':'即将正式开始报名','正式报名截止':'报名即将截止','考试日期':'考试时间正式公布','预计出分日期':'预计成绩即将公布'};
+  const nodeLabels={'报名注册开始':'即将开始报名注册','正式报名开始':'即将正式开始报名','正式报名截止':'报名即将截止','考试日期':'考试时间正式公布','出分日期':'成绩即将公布'};
   function loadImage(src){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src})}
   function fmt(v){const d=DateUtils.parseExcelDate(v);return d?`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`:'待官方公布'}
   function wrap(c,text,x,y,w,lineHeight,max=99,align='left'){const chars=String(text||'').split(''),out=[];let line='';for(const ch of chars){if(ch==='\n'){out.push(line);line='';continue}if(c.measureText(line+ch).width>w&&line){out.push(line);line=ch}else line+=ch}if(line)out.push(line);c.textAlign=align;out.slice(0,max).forEach((v,i)=>c.fillText(v,x,y+i*lineHeight));c.textAlign='left';return Math.min(out.length,max)*lineHeight}
   function fitTitle(c,text,x,y,w,maxLines=3){let size=66;while(size>=44){c.font=`900 ${size}px "PingFang SC","Microsoft YaHei",sans-serif`;const chars=String(text).split('');let lines=1,line='';for(const ch of chars){if(c.measureText(line+ch).width>w&&line){lines++;line=ch}else line+=ch}if(lines<=maxLines)return wrap(c,text,x,y,w,size*1.18,maxLines,'center');size-=4}return wrap(c,text,x,y,w,54,maxLines,'center')}
-  function rows(s){return[['报名注册开始',s.registrationStart],['正式报名开始',s.applicationStart],['正式报名截止',s.applicationDeadline],['考试日期',s.examDate],['预计出分日期',s.scoreDate]].filter(v=>v[1])}
+  function rows(s){return[['报名注册开始',s.registrationStart],['正式报名开始',s.applicationStart],['正式报名截止',s.applicationDeadline],['考试日期',s.examDate],['出分日期',s.scoreDate]].filter(v=>v[1])}
   async function create(event){const s=event.session||{},base=await loadImage(window.POSTER_TEMPLATE_DATA||'assets/shinyway-info-template.jpg'),canvas=document.createElement('canvas');canvas.width=base.naturalWidth||1125;canvas.height=base.naturalHeight||2656;const c=canvas.getContext('2d'),red='#c9002d',ink='#141414';c.drawImage(base,0,0,canvas.width,canvas.height);
     // 原模板只替换日期牌内的数字。
     c.fillStyle='#ec635c';c.fillRect(774,267,112,144);const d=new Date();c.fillStyle='#fff';c.textAlign='center';c.font='500 52px sans-serif';c.fillText(String(d.getDate()).padStart(2,'0'),830,326);c.fillStyle='rgba(255,255,255,.65)';c.fillRect(790,346,80,2);c.fillStyle='#fff';c.font='700 27px sans-serif';c.fillText(`${String(d.getMonth()+1).padStart(2,'0')}月`,830,386);c.textAlign='left';
