@@ -50,7 +50,21 @@
     const labelsHtml=items.map((d,i)=>`<text class="chart-label" x="${x(i)}" y="${h-8}" text-anchor="middle">${String(d.day).slice(5).replace('-','/')}</text>`).join('');
     root.innerHTML=`<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6673d8" stop-opacity=".22"/><stop offset="1" stop-color="#6673d8" stop-opacity="0"/></linearGradient></defs>${grids}<polygon class="chart-area" points="${area}"/><polyline class="chart-line" points="${points('page_views')}"/><polyline class="chart-line uv" points="${points('visitors')}"/>${labelsHtml}</svg>`;
   }
-  async function login(token){state.token=token;sessionStorage.setItem(tokenKey,token);try{await fetchData();$('#loginScreen').hidden=true;$('#dashboard').hidden=false}catch(e){sessionStorage.removeItem(tokenKey);state.token='';$('#loginError').textContent=e.message;throw e}}
+  async function authenticate(token){
+    const controller=typeof AbortController==='function'?new AbortController():null,timer=setTimeout(()=>controller?.abort(),12000);
+    try{
+      const response=await fetch(`${apiBase}/api/auth?_=${Date.now()}`,{headers:{Authorization:`Bearer ${token}`},cache:'no-store',signal:controller?.signal});
+      if(response.status===401)throw new Error('密钥不正确，请重新登录');
+      if(!response.ok)throw new Error('登录服务暂时不可用');
+    }catch(e){if(e?.name==='AbortError'||/fetch/i.test(e?.message||''))throw new Error('无法连接登录服务，请在系统浏览器中重试');throw e}finally{clearTimeout(timer)}
+  }
+  async function login(token){
+    state.token=token;
+    try{
+      await authenticate(token);sessionStorage.setItem(tokenKey,token);$('#loginScreen').hidden=true;$('#dashboard').hidden=false;
+      fetchData().catch(e=>{$('#rangeText').textContent=e.message;toast(e.message)});
+    }catch(e){sessionStorage.removeItem(tokenKey);state.token='';$('#loginError').textContent=e.message;throw e}
+  }
   $('#loginForm').addEventListener('submit',async e=>{
     e.preventDefault();
     const button=$('#loginBtn'),token=$('#adminToken').value.trim();
