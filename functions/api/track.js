@@ -1,6 +1,6 @@
 import { browserName, clientIp, deviceType, ensureSchema, json, maskIp, requireDatabase, safeText, visitorHash } from './_lib.js';
 
-export async function onRequestPost({ request, env, waitUntil }) {
+export async function onRequestPost({ request, env }) {
   try {
     const db = requireDatabase(env);
     const payload = await request.json().catch(() => ({}));
@@ -32,7 +32,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
         deviceType(ua), browserName(ua), maskIp(ip), metadata
       ).run();
     };
-    waitUntil(write());
+    await write();
     return json({ ok: true }, 202);
   } catch (error) {
     if (error.message === 'ANALYTICS_DB_NOT_CONFIGURED') return json({ ok: false, error: error.message }, 503);
