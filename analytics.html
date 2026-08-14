@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#f5f7ff">
+  <title>新通考试雷达｜数据监控</title>
+  <link rel="stylesheet" href="css/analytics.css?v=1">
+</head>
+<body>
+  <div class="login-screen" id="loginScreen">
+    <form class="login-card" id="loginForm">
+      <img src="assets/shinyway-logo.png" alt="新通教育">
+      <p>PRIVATE ANALYTICS</p>
+      <h1>数据监控后台</h1>
+      <span>仅限管理员查看访问数据</span>
+      <label><b>管理员密钥</b><input id="adminToken" type="password" autocomplete="current-password" placeholder="请输入 Cloudflare 中配置的密钥" required></label>
+      <button type="submit">进入监控后台 <i>→</i></button>
+      <em id="loginError"></em>
+    </form>
+  </div>
+
+  <div class="dashboard" id="dashboard" hidden>
+    <aside>
+      <div class="brand"><img src="assets/shinyway-logo.png" alt="新通教育"><div><strong>考试雷达</strong><span>数据监控中心</span></div></div>
+      <nav><button class="active"><i>◫</i>访问总览</button><button data-scroll="traffic"><i>⌁</i>访问趋势</button><button data-scroll="sources"><i>◎</i>来源与地区</button><button data-scroll="records"><i>≡</i>访问记录</button></nav>
+      <a href="index.html">← 返回考试雷达</a>
+    </aside>
+    <main>
+      <header>
+        <div><p>SHINYWAY · DATA INTELLIGENCE</p><h1>访问数据总览</h1><span id="rangeText">正在读取统计数据…</span></div>
+        <div class="header-actions"><button id="refreshBtn">↻ 刷新</button><button class="logout" id="logoutBtn">退出</button></div>
+      </header>
+
+      <section class="filter-bar">
+        <div class="presets" id="presets"><button data-days="1">今天</button><button data-days="7" class="active">近7天</button><button data-days="30">近30天</button><button data-days="90">近90天</button></div>
+        <div class="custom-date"><label>开始日期<input type="date" id="startDate"></label><i>—</i><label>结束日期<input type="date" id="endDate"></label><button id="applyDate">查询</button></div>
+      </section>
+
+      <section class="metric-grid" id="metrics">
+        <article class="metric blue"><div><span>访问人数</span><strong>—</strong><small>独立访客 UV</small></div><i>♙</i></article>
+        <article class="metric purple"><div><span>访问人次</span><strong>—</strong><small>访问会话 Sessions</small></div><i>◎</i></article>
+        <article class="metric cyan"><div><span>页面浏览量</span><strong>—</strong><small>浏览次数 PV</small></div><i>▤</i></article>
+        <article class="metric orange"><div><span>功能用量</span><strong>—</strong><small>复制、分享与配图</small></div><i>⌁</i></article>
+        <article class="metric rose"><div><span>人均浏览</span><strong>—</strong><small>每次访问浏览页数</small></div><i>↗</i></article>
+      </section>
+
+      <section class="panel trend-panel" id="traffic">
+        <div class="panel-head"><div><p>TRAFFIC TREND</p><h2>访问趋势</h2></div><div class="legend"><span><i class="pv"></i>浏览量</span><span><i class="uv"></i>访问人数</span></div></div>
+        <div class="chart" id="trendChart"><div class="loading">正在生成趋势图…</div></div>
+      </section>
+
+      <section class="split" id="sources">
+        <article class="panel"><div class="panel-head"><div><p>TOP PAGES</p><h2>热门页面</h2></div></div><div class="rank-list" id="pageList"></div></article>
+        <article class="panel"><div class="panel-head"><div><p>TRAFFIC SOURCE</p><h2>访问来源</h2></div></div><div class="rank-list" id="sourceList"></div></article>
+      </section>
+
+      <section class="split">
+        <article class="panel"><div class="panel-head"><div><p>GEO LOCATION</p><h2>地区分布</h2></div></div><div class="table-wrap"><table><thead><tr><th>国家/地区</th><th>城市</th><th>人数</th><th>浏览量</th></tr></thead><tbody id="regionRows"></tbody></table></div></article>
+        <article class="panel"><div class="panel-head"><div><p>DEVICE & ACTION</p><h2>设备与功能用量</h2></div></div><div class="dual-list"><div><h3>访问设备</h3><div class="rank-list compact" id="deviceList"></div></div><div><h3>功能操作</h3><div class="rank-list compact" id="actionList"></div></div></div></article>
+      </section>
+
+      <section class="panel" id="records">
+        <div class="panel-head"><div><p>IP ORIGIN</p><h2>IP 来源与最近访问</h2><span>IP 已脱敏，仅用于判断大致访问来源</span></div></div>
+        <div class="table-wrap"><table><thead><tr><th>脱敏 IP</th><th>国家/地区</th><th>省份/城市</th><th>访问人次</th><th>浏览量</th><th>最近访问</th></tr></thead><tbody id="ipRows"></tbody></table></div>
+      </section>
+      <footer>访问统计仅用于内部运营分析 · 原始 IP 不会写入数据库</footer>
+    </main>
+  </div>
+  <div class="toast" id="analyticsToast"></div>
+  <script src="js/analytics-dashboard.js?v=1"></script>
+</body>
+</html>
