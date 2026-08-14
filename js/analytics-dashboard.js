@@ -1,5 +1,6 @@
 (function(){
   const $=s=>document.querySelector(s),tokenKey='exam-radar-analytics-token';
+  const apiBase='';
   const state={token:sessionStorage.getItem(tokenKey)||'',days:7,start:null,end:null,data:null};
   const labels={page_view:'页面浏览',copy_content:'复制内容',share_site:'分享网页',generate_poster:'生成配图',download_poster:'下载配图'};
   const pageLabels={radar:'小语种考试雷达',calendar:'全年考试日历',library:'考试库',invitation:'考试邀约钩子',reminder:'对内营销提醒'};
@@ -10,15 +11,17 @@
   function fmtTime(v){if(!v)return'—';return new Intl.DateTimeFormat('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(v))}
   function pageName(path){const hash=String(path||'').split('#')[1]||'radar';return pageLabels[hash]||hash||'/'}
   async function fetchData(){
+    if(location.protocol==='file:')throw new Error('本地文件无法读取线上统计，请打开线上管理后台');
     $('#rangeText').textContent='正在读取统计数据…';
     const query=new URLSearchParams({start:state.start.toISOString(),end:state.end.toISOString()});
     const controller=typeof AbortController==='function'?new AbortController():null;
     const timer=setTimeout(()=>controller?.abort(),15000);
     let response;
+    const request=()=>fetch(`${apiBase}/api/stats?${query}&_=${Date.now()}`,{headers:{Authorization:`Bearer ${state.token}`},cache:'no-store',signal:controller?.signal});
     try{response=await Promise.race([
-      fetch(`/api/stats?${query}&_=${Date.now()}`,{headers:{Authorization:`Bearer ${state.token}`},cache:'no-store',signal:controller?.signal}),
+      (async()=>{let lastError;for(let i=0;i<3;i++){try{return await request()}catch(e){lastError=e;if(i<2)await new Promise(r=>setTimeout(r,700*(i+1)))}}throw lastError})(),
       new Promise((_,reject)=>setTimeout(()=>reject(new Error('网络响应超时，请重试')),16000))
-    ])}catch(e){throw new Error(e?.name==='AbortError'?'网络响应超时，请重试':(e?.message||'无法连接统计服务'))}finally{clearTimeout(timer)}
+    ])}catch(e){const message=e?.name==='AbortError'?'网络响应超时，请重试':(/fetch/i.test(e?.message||'')?'无法连接线上统计服务，请切换网络或在浏览器中打开':(e?.message||'无法连接统计服务'));throw new Error(message)}finally{clearTimeout(timer)}
     const data=await response.json().catch(()=>({}));
     if(response.status===401)throw new Error('密钥不正确，请重新登录');
     if(data.error==='ANALYTICS_DB_NOT_CONFIGURED')throw new Error('Cloudflare 尚未绑定 ANALYTICS_DB 数据库');
