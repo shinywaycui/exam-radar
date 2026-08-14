@@ -7,7 +7,6 @@
   function send(eventName,pagePath,metadata){
     const body=JSON.stringify({eventName,pagePath,pageTitle:document.title,referrer:document.referrer,sessionId,metadata});
     try{
-      if(navigator.sendBeacon&&eventName==='page_view'){navigator.sendBeacon('/api/track',new Blob([body],{type:'application/json'}));return}
       fetch('/api/track',{method:'POST',headers:{'content-type':'application/json'},body,keepalive:true}).catch(()=>{})
     }catch{}
   }
