@@ -16,8 +16,8 @@
       <h1>数据监控后台</h1>
       <span>仅限管理员查看访问数据</span>
       <label><b>管理员密钥</b><input id="adminToken" type="password" autocomplete="current-password" placeholder="请输入 Cloudflare 中配置的密钥" required></label>
-      <button type="submit">进入监控后台 <i>→</i></button>
-      <em id="loginError"></em>
+      <button type="submit" id="loginBtn">进入监控后台 <i>→</i></button>
+      <em id="loginError" role="status" aria-live="polite"></em>
     </form>
   </div>
 
@@ -69,6 +69,6 @@
     </main>
   </div>
   <div class="toast" id="analyticsToast"></div>
-  <script src="js/analytics-dashboard.js?v=1"></script>
+  <script src="js/analytics-dashboard.js?v=2"></script>
 </body>
 </html>

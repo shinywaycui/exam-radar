@@ -42,7 +42,13 @@
     root.innerHTML=`<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6673d8" stop-opacity=".22"/><stop offset="1" stop-color="#6673d8" stop-opacity="0"/></linearGradient></defs>${grids}<polygon class="chart-area" points="${area}"/><polyline class="chart-line" points="${points('page_views')}"/><polyline class="chart-line uv" points="${points('visitors')}"/>${labelsHtml}</svg>`;
   }
   async function login(token){state.token=token;sessionStorage.setItem(tokenKey,token);try{await fetchData();$('#loginScreen').hidden=true;$('#dashboard').hidden=false}catch(e){sessionStorage.removeItem(tokenKey);state.token='';$('#loginError').textContent=e.message;throw e}}
-  $('#loginForm').addEventListener('submit',async e=>{e.preventDefault();$('#loginError').textContent='';try{await login($('#adminToken').value.trim())}catch{}});
+  $('#loginForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const button=$('#loginBtn'),token=$('#adminToken').value.trim();
+    if(!token){$('#loginError').textContent='请输入管理员密钥';return}
+    $('#loginError').textContent='正在验证…';button.disabled=true;button.innerHTML='正在登录 <i>…</i>';
+    try{await login(token)}catch(e){$('#loginError').textContent=e.message||'登录失败，请稍后重试';toast($('#loginError').textContent)}finally{button.disabled=false;button.innerHTML='进入监控后台 <i>→</i>'}
+  });
   $('#logoutBtn').addEventListener('click',()=>{sessionStorage.removeItem(tokenKey);location.reload()});
   $('#refreshBtn').addEventListener('click',()=>fetchData().then(()=>toast('数据已刷新')).catch(e=>toast(e.message)));
   $('#presets').addEventListener('click',e=>{const b=e.target.closest('[data-days]');if(!b)return;$$('#presets button').forEach(x=>x.classList.toggle('active',x===b));setRange(+b.dataset.days);fetchData().catch(e=>toast(e.message))});
