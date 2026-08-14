@@ -1,0 +1,8 @@
+/analytics*
+  Cache-Control: no-store, no-cache, must-revalidate
+
+/analytics.html*
+  Cache-Control: no-store, no-cache, must-revalidate
+
+/js/analytics-dashboard.js
+  Cache-Control: no-store, no-cache, must-revalidate
