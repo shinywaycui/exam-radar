@@ -33,6 +33,27 @@
     if(type.includes('轻营销'))return`✨最近关注${exam}的同学越来越多啦\n${session||exam} · ${timingText(event)}\n与其临近节点匆忙准备，不如早点找到适合自己的节奏。\n\n${cta}`;
     return`📌${exam}${session?`｜${session}`:''}\n${timingText(event)}\n请及时确认官方安排，并根据目标调整学习计划。\n\n${cta}`;
   }
-  function buildMoments(data,event,today=new Date()){if(!event)return[];const vars=varsFor(event,today);return matchMoments(data,event).map(t=>{const type=t.copyType||'节点提醒型',dynamic=dynamicMomentsBody(type,event,vars,today),templateTitle=render(t.title,vars),templateBody=render(t.body,vars);return{...t,copyType:type,renderedTitle:dynamicTitle(type,event,vars,today)||templateTitle||`${vars['考试名称']}考试提醒`,renderedBody:dynamic||templateBody||`${vars['考试名称']}近期有新的考试节点，请及时关注官方安排。`}}).filter(t=>t.renderedTitle&&t.renderedBody)}
+  const examVoices={
+    TOPIK:{flag:'🇰🇷',goal:'韩语等级和写作目标',prep:'写作框架、听力节奏和阅读速度',score:'选择考试届数，输入准考证号和出生日期即可查询'},
+    JLPT:{flag:'🇯🇵',goal:'N1–N5目标级别',prep:'文字词汇、语法阅读和听力时间分配',score:'备好准考证号和注册证件号，建议错峰查分'},
+    JLCT:{flag:'🇯🇵',goal:'JCT1–JCT5报考级别',prep:'词汇、语法、阅读与听力的限时训练',score:'JLCT出分节奏快，查分后可以马上复盘下一级目标'},
+    TestDaF:{flag:'🇩🇪',goal:'TDN 3–TDN 5四科目标',prep:'阅读、听力、写作和口语四科均衡',score:'登录德福考试官网查看Ergebnis，并下载电子版成绩单'},
+    Goethe:{flag:'🇩🇪',goal:'A1–C2对应级别',prep:'按听说读写单项查漏补缺',score:'歌德出分以考点通知为准，记得同步下载或领取证书'},
+    French:{flag:'🇫🇷',goal:'CEFR目标区间与申请用途',prep:'听力、语言结构和阅读的速度与准确率',score:'查分后记得对照CEFR等级和申请要求'},
+    DELE:{flag:'🇪🇸',goal:'A1–C2目标级别',prep:'阅读、听力、写作与口试的综合表现',score:'成绩公布后可同步核对APTO结果与各部分分数'},
+    CILS:{flag:'🇮🇹',goal:'A1–C2与用途对应级别',prep:'听读、语言运用、写作和口试的完整度',score:'CILS出分周期较长，查到成绩后请及时保存结果页'},
+    generic:{flag:'🌍',goal:'本次报考目标',prep:'薄弱项和真题节奏',score:'请从官方渠道查询成绩并保存结果'}
+  };
+  function voiceKey(e){const v=`${e.examId||''}${e.examName||''}`;if(/TOPIK/i.test(v))return'TOPIK';if(/JLCT/i.test(v))return'JLCT';if(/JLPT/i.test(v))return'JLPT';if(/TestDaF|德福/i.test(v))return'TestDaF';if(/歌德|Goethe/i.test(v))return'Goethe';if(/TCF|TEF/i.test(v))return'French';if(/DELE/i.test(v))return'DELE';if(/CILS/i.test(v))return'CILS';return'generic'}
+  function eventName(e){const session=String(e.sessionName||'');if(voiceKey(e)==='TOPIK'){const edition=session.match(/第\s*\d+\s*届/)?.[0]||'';return`${edition}${session.includes('韩国')?'韩国场':''}TOPIK`}return e.examName||'小语种考试'}
+  function distinctCopy(type,e,vars){const key=voiceKey(e),v=examVoices[key]||examVoices.generic,name=eventName(e),date=shortDate(e.eventDate),when=e.daysUntil===0?'今天':e.daysUntil===1?`明天（${date}）`:e.daysUntil>1?`${date}，还有${e.daysUntil}天`:`已过去${Math.abs(e.daysUntil)}天`,session=vars['考试场次']||name;
+    if(e.eventType==='出分日期'){
+      if(key==='TOPIK')return e.daysUntil===0?{title:`${v.flag}${name}能查分啦！`,body:`☔️超全查分流程已整理\n👇${v.score}\n🌝祝大家统统高分通关！`}:{title:`${v.flag}${name}考试成绩${e.daysUntil===1?'明日可查':'即将可查'}！📣查分攻略来啦！`,body:`☔️TOPIK查分攻略已整理\n⏰${when}公布成绩\n👇届数、准考证号、出生日期请提前备好\n🌝预祝大家高分通关！`};
+      return{title:`${v.flag}${name}${e.daysUntil===0?'今日可查':e.daysUntil===1?'明日出分':'成绩即将公布'}！`,body:`${v.flag}${session}成绩${e.daysUntil===0?'已可查询':'即将公布'}\n⏰${vars['出分日期']||date}\n👇${v.score}\n✨愿每一份努力都有回响，查分后也别忘了规划下一步！`}}
+    if(e.eventType==='正式报名截止')return{title:`${v.flag}${name}报名${e.daysUntil===0?'今日截止':'即将截止'}！`,body:`⏰${when}截止报名\n✅再次确认：${v.goal}、个人信息、缴费状态\n报名凭证记得保存，别把最后一步留到截止前～`};
+    if(e.eventType==='报名注册开始'||e.eventType==='正式报名开始')return{title:`${v.flag}${name}${e.eventType==='报名注册开始'?'注册':'报名'}${e.daysUntil===0?'今日开启':'即将开启'}！`,body:`📣${session}重要时间节点\n⏰${when}${e.daysUntil>=0?'开启':''}\n👇提前确认${v.goal}，准备好账号、证件与缴费信息\n报名后可以围绕${v.prep}进入备考节奏～`};
+    if(e.eventType==='考试日期'&&e.daysUntil>=0)return{title:`${v.flag}${name}${e.daysUntil===0?'今日开考':'考试倒计时'}！`,body:`🚀${session}${e.daysUntil===0?'今日开考':`还有${e.daysUntil}天`}\n📝最后阶段重点：${v.prep}\n✅证件与准考证 ✅路线与时间 ✅考试用品\n稳住节奏，祝大家顺利拿下目标！`};
+    if(e.eventType==='考试日期'&&e.daysUntil<0)return{title:`${v.flag}${name}考后复盘｜下一步怎么走？`,body:`🎯趁记忆还清晰，先复盘${v.prep}\n📝记录薄弱点，再围绕${v.goal}调整下一阶段计划\n考完不是终点，而是下一次进阶的起点～`};return null}
+  function buildMoments(data,event,today=new Date()){if(!event)return[];const vars=varsFor(event,today);return matchMoments(data,event).map(t=>{const type=t.copyType||'节点提醒型',distinct=/品宣|节点提醒/.test(type)?distinctCopy(type,event,vars):null,dynamic=dynamicMomentsBody(type,event,vars,today),templateTitle=render(t.title,vars),templateBody=render(t.body,vars);return{...t,copyType:type,renderedTitle:distinct?.title||dynamicTitle(type,event,vars,today)||templateTitle||`${vars['考试名称']}考试提醒`,renderedBody:distinct?.body||dynamic||templateBody||`${vars['考试名称']}近期有新的考试节点，请及时关注官方安排。`}}).filter(t=>t.renderedTitle&&t.renderedBody)}
   window.TemplateEngine={render,varsFor,buildWechat,buildMoments,updateText};
 })();
