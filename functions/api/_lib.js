@@ -85,7 +85,7 @@ export function safeText(value, max = 240) {
 export function authorized(request, env) {
   const expected = String(env.ANALYTICS_ADMIN_TOKEN || '');
   const actual = request.headers.get('Authorization') || '';
-  return expected.length >= 12 && actual === `Bearer ${expected}`;
+  return expected.length >= 8 && actual === `Bearer ${expected}`;
 }
 
 export function dateRange(url) {
