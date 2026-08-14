@@ -17,7 +17,7 @@
     const controller=typeof AbortController==='function'?new AbortController():null;
     const timer=setTimeout(()=>controller?.abort(),15000);
     let response;
-    const request=()=>fetch(`${apiBase}/api/stats?${query}&_=${Date.now()}`,{headers:{Authorization:`Bearer ${state.token}`},cache:'no-store',signal:controller?.signal});
+    const request=()=>fetch(`${apiBase}/api/stats?${query}&_=${Date.now()}`,{headers:{'X-Analytics-Token':state.token},cache:'no-store',signal:controller?.signal});
     try{response=await Promise.race([
       (async()=>{let lastError;for(let i=0;i<3;i++){try{return await request()}catch(e){lastError=e;if(i<2)await new Promise(r=>setTimeout(r,700*(i+1)))}}throw lastError})(),
       new Promise((_,reject)=>setTimeout(()=>reject(new Error('网络响应超时，请重试')),16000))
@@ -53,7 +53,7 @@
   async function authenticate(token){
     const controller=typeof AbortController==='function'?new AbortController():null,timer=setTimeout(()=>controller?.abort(),12000);
     try{
-      const response=await fetch(`${apiBase}/api/auth?_=${Date.now()}`,{headers:{Authorization:`Bearer ${token}`},cache:'no-store',signal:controller?.signal});
+      const response=await fetch(`${apiBase}/api/auth?_=${Date.now()}`,{headers:{'X-Analytics-Token':token},cache:'no-store',signal:controller?.signal});
       if(response.status===401)throw new Error('密钥不正确，请重新登录');
       if(!response.ok)throw new Error('登录服务暂时不可用');
     }catch(e){if(e?.name==='AbortError'||/fetch/i.test(e?.message||''))throw new Error('无法连接登录服务，请在系统浏览器中重试');throw e}finally{clearTimeout(timer)}
