@@ -35,7 +35,7 @@
     renderChart(data.trend);renderRanks('#pageList',data.pages,x=>pageName(x.name));renderRanks('#sourceList',data.sources,x=>x.name);
     renderRanks('#deviceList',data.devices,x=>x.name);renderRanks('#actionList',data.actions,x=>labels[x.name]||x.name);
     $('#regionRows').innerHTML=data.regions.length?data.regions.map(x=>`<tr><td>${esc(x.country)}</td><td>${esc(x.city)}</td><td>${num(x.visitors)}</td><td>${num(x.page_views)}</td></tr>`).join(''):emptyRow(4);
-    $('#ipRows').innerHTML=data.ipSources.length?data.ipSources.map(x=>`<tr><td>${esc(x.masked_ip)}</td><td>${esc(x.country||'未知')}</td><td>${esc([x.region,x.city].filter(Boolean).join(' / ')||'未知')}</td><td>${num(x.visits)}</td><td>${num(x.page_views)}</td><td>${fmtTime(x.last_seen)}</td></tr>`).join(''):emptyRow(6);
+    $('#ipRows').innerHTML=data.ipSources.length?data.ipSources.map(x=>`<tr><td>${esc(x.country||'未知')}</td><td>${esc([x.region,x.city].filter(Boolean).join(' / ')||'未知')}</td><td>${num(x.visits)}</td><td>${num(x.page_views)}</td><td>${fmtTime(x.last_seen)}</td></tr>`).join(''):emptyRow(5);
   }
   function $$(s){return[...document.querySelectorAll(s)]}
   function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}

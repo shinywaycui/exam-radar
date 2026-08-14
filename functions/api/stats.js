@@ -35,10 +35,10 @@ export async function onRequestGet({ request, env }) {
       bindRange(`SELECT event_name AS name, COUNT(*) AS value FROM analytics_events
         WHERE occurred_at>=? AND occurred_at<? AND event_name<>'page_view'
         GROUP BY event_name ORDER BY value DESC LIMIT 12`),
-      bindRange(`SELECT masked_ip, country, region, city, COUNT(*) AS page_views,
+      bindRange(`SELECT country, region, city, COUNT(*) AS page_views,
         COUNT(DISTINCT session_id) AS visits, MAX(occurred_at) AS last_seen
         FROM analytics_events WHERE occurred_at>=? AND occurred_at<? AND event_name='page_view'
-        GROUP BY masked_ip,country,region,city ORDER BY last_seen DESC LIMIT 60`),
+        GROUP BY country,region,city ORDER BY last_seen DESC LIMIT 60`),
       bindRange(`SELECT occurred_at,event_name,page_path,masked_ip,country,city,device_type,browser_name
         FROM analytics_events WHERE occurred_at>=? AND occurred_at<? ORDER BY occurred_at DESC LIMIT 80`)
     ]);
