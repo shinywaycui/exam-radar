@@ -12,7 +12,13 @@
   async function fetchData(){
     $('#rangeText').textContent='正在读取统计数据…';
     const query=new URLSearchParams({start:state.start.toISOString(),end:state.end.toISOString()});
-    const response=await fetch(`/api/stats?${query}`,{headers:{Authorization:`Bearer ${state.token}`},cache:'no-store'});
+    const controller=typeof AbortController==='function'?new AbortController():null;
+    const timer=setTimeout(()=>controller?.abort(),15000);
+    let response;
+    try{response=await Promise.race([
+      fetch(`/api/stats?${query}&_=${Date.now()}`,{headers:{Authorization:`Bearer ${state.token}`},cache:'no-store',signal:controller?.signal}),
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error('网络响应超时，请重试')),16000))
+    ])}catch(e){throw new Error(e?.name==='AbortError'?'网络响应超时，请重试':(e?.message||'无法连接统计服务'))}finally{clearTimeout(timer)}
     const data=await response.json().catch(()=>({}));
     if(response.status===401)throw new Error('密钥不正确，请重新登录');
     if(data.error==='ANALYTICS_DB_NOT_CONFIGURED')throw new Error('Cloudflare 尚未绑定 ANALYTICS_DB 数据库');
