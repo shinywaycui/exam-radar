@@ -1,7 +1,7 @@
 (function(){
   const aliases={
     basics:{examId:['考试iD','考试ID','examId'],language:['语种'],examName:['考试名称'],frequency:['考试频率'],usualMonths:['通常考试月份'],levels:['考试级别'],fee:['报名费用'],scoreTime:['出分时间'],validity:['成绩有效期'],intro:['考试简介'],registrationUrl:['官方报名网址'],infoSource:['官方信息来源'],enabled:['是否启用']},
-    sessions:{recordId:['记录ID'],year:['年份'],examId:['考试ID','考试iD','examId'],language:['语种'],examName:['考试名称'],sessionName:['考试场次'],sessionMonth:['场次月份'],registrationStart:['报名注册开始'],applicationStart:['正式报名开始'],applicationDeadline:['正式报名截止'],examDate:['考试日期'],scoreDate:['出分日期','预计出分日期'],infoUpdatedAt:['信息更新时间'],updateType:['更新类型'],updateNote:['更新说明'],sourceUrl:['官方来源URL'],region:['适用地区/考点'],notes:['备注'],status:['状态'],enabled:['是否启用'],dataVersion:['数据版本']},
+    sessions:{recordId:['记录ID'],year:['年份'],examId:['考试ID','考试iD','examId'],language:['语种'],examName:['考试名称'],sessionName:['考试场次'],sessionMonth:['场次月份'],registrationStart:['报名注册开始'],applicationStart:['正式报名开始'],applicationDeadline:['正式报名截止'],examDate:['考试日期'],scoreDate:['出分日期','预计出分日期'],infoUpdatedAt:['信息更新时间'],updateType:['更新类型'],updateNote:['更新说明'],sourceUrl:['官方来源URL'],region:['适用地区','适用地区/考点'],examCenter:['考点信息'],notes:['备注'],status:['状态'],enabled:['是否启用'],dataVersion:['数据版本']},
     rules:{ruleId:['规则ID'],eventType:['节点类型'],startDays:['起始天数'],endDays:['结束天数'],marketingStage:['营销阶段'],radarLevel:['雷达等级'],monthlyFocus:['本月是否重点'],advisorActions:['顾问建议动作'],generateWechat:['生成企微提醒'],generateMoments:['生成朋友圈'],priority:['优先级']},
     wechat:{templateId:['模板ID'],eventType:['适用节点'],marketingStage:['营销阶段'],title:['标题模板'],body:['正文模板'],enabled:['是否启用']},
     moments:{templateId:['模板ID'],eventType:['适用节点'],marketingStage:['营销阶段'],copyType:['文案类型'],title:['标题模板'],body:['正文模板'],enabled:['是否启用']},
