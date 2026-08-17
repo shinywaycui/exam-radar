@@ -10,9 +10,10 @@
   };
   const clean=v=>typeof v==='string'?v.trim():v;
   const canonicalNode=v=>String(v||'').trim()==='预计出分日期'?'出分日期':clean(v);
+  const canonicalLanguage=v=>String(v||'').trim()==='西语'?'西班牙语':clean(v);
   const isEnabled=v=>v==null||String(v).trim()===''||['是','true','1','启用','yes'].includes(String(v).trim().toLowerCase());
   function mapRow(row,map){const out={};Object.entries(map).forEach(([key,names])=>{const hit=names.find(n=>Object.prototype.hasOwnProperty.call(row,n));out[key]=clean(hit?row[hit]:'')});return out}
-  function normalizeRows(rows,type){return rows.filter(r=>r&&Object.values(r).some(v=>v!=null&&String(v).trim()!=='')).map((r,index)=>{const out={...mapRow(r,aliases[type]),_order:index};if(['rules','wechat','moments','invitations'].includes(type))out.eventType=canonicalNode(out.eventType);if(type==='dictionaries'&&out.type==='节点类型')out.value=canonicalNode(out.value);return out})}
+  function normalizeRows(rows,type){return rows.filter(r=>r&&Object.values(r).some(v=>v!=null&&String(v).trim()!=='')).map((r,index)=>{const out={...mapRow(r,aliases[type]),_order:index};if(['rules','wechat','moments','invitations'].includes(type))out.eventType=canonicalNode(out.eventType);if(type==='invitations')out.language=canonicalLanguage(out.language);if(type==='dictionaries'&&out.type==='节点类型')out.value=canonicalNode(out.value);return out})}
   function standardName(v){return String(v||'').toLowerCase().replace(/[（）]/g,x=>x==='（'?'(':')').replace(/考试/g,'').replace(/[\s()（）\-_]/g,'')}
   function fuzzy(a,b){a=standardName(a);b=standardName(b);return!!a&&!!b&&(a.includes(b)||b.includes(a))}
   function noteDate(v){const m=String(v||'').match(/(\d{4})[\/.\-年](\d{1,2})[\/.\-月](\d{1,2})日?/);if(!m)return'';return`${m[1]}-${String(m[2]).padStart(2,'0')}-${String(m[3]).padStart(2,'0')}`}
