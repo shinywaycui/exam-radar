@@ -16,8 +16,13 @@
   function enrich(e){return{...e,marketingStage:e.marketingStage||(e.daysUntil===0?'今日节点':e.daysUntil>0?'近期节点':'节点复盘'),radarLevel:e.radarLevel||(e.daysUntil===0?'🚨':'📌'),advisorActions:e.advisorActions||defaultActions[e.eventType]||'关注考试最新节点'}}
   function sortByTiming(a,b){return(Number(b.daysUntil===0)-Number(a.daysUntil===0))||(Number(a.daysUntil<0)-Number(b.daysUntil<0))||Math.abs(a.daysUntil)-Math.abs(b.daysUntil)||(b.priority||0)-(a.priority||0)||a._order-b._order}
   function limitGoethe(list,max=4){let count=0;return list.filter(e=>!String(e.examName||'').includes('歌德')||count++<max)}
+  function isHomeRadarSession(session){
+    if(!String(session.examName||'').includes('歌德'))return true;
+    const name=String(session.sessionName||'');
+    return /\b(A1|B1|B2)\b/i.test(name)&&!/\b(A2|C1|C2)\b/i.test(name);
+  }
   function getTodayRadar(data,today=new Date()){
-    const events=buildExamEvents(data.sessions,data.rules,today),todayEvents=events.filter(e=>e.daysUntil===0),todayUpdates=data.sessions.filter(s=>DateUtils.isSameDay(s.infoUpdatedAt,today)).map((s,i)=>({eventId:`${s.recordId}-update`,eventType:'信息更新时间',eventDate:DateUtils.dateKey(today),daysUntil:0,session:s,examName:s.examName,language:s.language,sessionName:s.sessionName,updateType:s.updateType,updateNote:s.updateNote,_order:i}));
+    const radarSessions=data.sessions.filter(isHomeRadarSession),events=buildExamEvents(radarSessions,data.rules,today),todayEvents=events.filter(e=>e.daysUntil===0),todayUpdates=radarSessions.filter(s=>DateUtils.isSameDay(s.infoUpdatedAt,today)).map((s,i)=>({eventId:`${s.recordId}-update`,eventType:'信息更新时间',eventDate:DateUtils.dateKey(today),daysUntil:0,session:s,examName:s.examName,language:s.language,sessionName:s.sessionName,updateType:s.updateType,updateNote:s.updateNote,_order:i}));
     // 所有首页模块都从最新场次日期重新计算：优先今天和未来节点，只保留最近 7 天的已过节点用于复盘。
     const month=DateUtils.parseExcelDate(today),monthEvents=events.filter(e=>e.year===month.getFullYear()&&e.month===month.getMonth()+1&&e.daysUntil>=-7).map(enrich),nearby=events.filter(e=>e.daysUntil>=0&&e.daysUntil<=31).map(enrich),monthlyFocus=limitGoethe([...monthEvents,...nearby].filter((e,i,a)=>a.findIndex(x=>x.eventId===e.eventId)===i).sort(sortByTiming));
     const upcomingEvents=events.filter(e=>e.daysUntil>0&&e.daysUntil<=7).map(enrich).sort(sortByTiming),momentPool=events.filter(e=>e.daysUntil>=-7&&e.daysUntil<=7).map(enrich).sort(sortByTiming),momentsRecommendations=limitGoethe(momentPool.filter(e=>!e.rule||DataNormalizer.isEnabled(e.rule.generateMoments)));
