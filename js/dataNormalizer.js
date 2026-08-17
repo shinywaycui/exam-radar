@@ -15,11 +15,13 @@
   function normalizeRows(rows,type){return rows.filter(r=>r&&Object.values(r).some(v=>v!=null&&String(v).trim()!=='')).map((r,index)=>{const out={...mapRow(r,aliases[type]),_order:index};if(['rules','wechat','moments','invitations'].includes(type))out.eventType=canonicalNode(out.eventType);if(type==='dictionaries'&&out.type==='节点类型')out.value=canonicalNode(out.value);return out})}
   function standardName(v){return String(v||'').toLowerCase().replace(/[（）]/g,x=>x==='（'?'(':')').replace(/考试/g,'').replace(/[\s()（）\-_]/g,'')}
   function fuzzy(a,b){a=standardName(a);b=standardName(b);return!!a&&!!b&&(a.includes(b)||b.includes(a))}
+  function noteDate(v){const m=String(v||'').match(/(\d{4})[\/.\-年](\d{1,2})[\/.\-月](\d{1,2})日?/);if(!m)return'';return`${m[1]}-${String(m[2]).padStart(2,'0')}-${String(m[3]).padStart(2,'0')}`}
+  function applyExamPeriods(sessions){sessions.forEach(s=>{if(s.language!=='法语'||!String(s.examName||'').toUpperCase().includes('TCF/TEF'))return;const m=String(s.notes||'').match(/考试(?:周期|区间)\s*[:：]\s*((?:\d{4})[\/.\-年]\d{1,2}[\/.\-月]\d{1,2}日?)\s*[-–—~～至]\s*((?:\d{4})[\/.\-年]\d{1,2}[\/.\-月]\d{1,2}日?)/);if(!m)return;const start=noteDate(m[1]),end=noteDate(m[2]);if(start&&end&&end>=start){s.examPeriodStart=start;s.examPeriodEnd=end}})}
   function linkBasics(data){data.sessions.forEach(s=>{s.basic=data.basics.find(b=>b.examId&&s.examId&&b.examId===s.examId)||data.basics.find(b=>b.language===s.language&&standardName(b.examName)===standardName(s.examName))||data.basics.find(b=>b.language===s.language&&fuzzy(b.examName,s.examName))||null})}
   function normalize(raw,meta={}){
     const data={basics:normalizeRows(raw['考试基础信息']||[],'basics'),sessions:normalizeRows(raw['年度考试场次']||[],'sessions'),rules:normalizeRows(raw['今日营销规则']||[],'rules'),wechat:normalizeRows(raw['企微提醒模板']||[],'wechat'),moments:normalizeRows(raw['朋友圈模板']||[],'moments'),invitations:normalizeRows(raw['考试邀约内容']||[],'invitations'),dictionaries:normalizeRows(raw['字典配置']||[],'dictionaries'),meta};
     data.basics=data.basics.filter(x=>x.examId||x.examName).filter(x=>isEnabled(x.enabled));
-    data.sessions=data.sessions.filter(x=>x.recordId||x.examName).filter(x=>isEnabled(x.enabled));
+    data.sessions=data.sessions.filter(x=>x.recordId||x.examName).filter(x=>isEnabled(x.enabled));applyExamPeriods(data.sessions);
     data.rules=data.rules.filter(x=>x.eventType);data.wechat=data.wechat.filter(x=>x.templateId&&isEnabled(x.enabled));data.moments=data.moments.filter(x=>x.templateId&&isEnabled(x.enabled));data.invitations=data.invitations.filter(x=>x.contentId&&(x.knowledge||x.inviteScript)).filter(x=>isEnabled(x.enabled));
     linkBasics(data);return data;
   }
