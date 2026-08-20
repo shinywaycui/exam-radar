@@ -5,9 +5,8 @@
   function updateText(e){const t=String(e.updateType||'');if(t==='首次录入')return'今日新增考试信息';if(t.includes('时间'))return'考试时间更新';return t?`信息更新：${t}`:'考试信息更新'}
   function dynamicLine(e){const icon=RadarEngine.emoji[e.language]||'🌐';if(e.eventType==='信息更新时间')return`${icon} ${e.examName}｜${e.sessionName}\n${updateText(e)}`;return`${icon} ${e.examName}｜${e.sessionName}\n${e.daysUntil===0?'今日'+e.eventType:`距离${e.eventType}${e.daysUntil>0?'还有':'已过去'}${Math.abs(e.daysUntil)}天`}`}
   function buildWechat(data,radar,today=new Date()){
-    if(!radar.wechatEvents.length)return'';const tpl=data.wechat.find(t=>t.eventType==='每日汇总')||data.wechat[0];
-    const vars={'今天日期':DateUtils.formatDate(today,true),'今日节点数量':radar.wechatEvents.length,'今日动态汇总':radar.wechatEvents.map(dynamicLine).join('\n\n'),'今日动作汇总':radar.advisorActions.map((a,i)=>`${['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣'][i]||`${i+1}.`} ${a}`).join('\n')||'关注近期考试节点，及时同步目标学员。'};
-    return tpl?`${render(tpl.title,vars)}\n\n${render(tpl.body,vars)}`:`📡【今日小语种考试营销雷达｜${vars.今天日期}】\n\n${vars.今日动态汇总}\n\n🎯 今日顾问建议动作：\n${vars.今日动作汇总}`;
+    if(!radar.wechatEvents.length)return'';const groups=[[7,'提前7天提醒'],[3,'提前3天提醒'],[0,'当天提醒']],sections=groups.map(([days,label])=>{const items=radar.wechatEvents.filter(e=>e.daysUntil===days);return items.length?`【${label}】\n${items.map(dynamicLine).join('\n\n')}`:''}).filter(Boolean),actions=radar.advisorActions.map((a,i)=>`${['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣'][i]||`${i+1}.`} ${a}`).join('\n')||'关注近期考试节点，及时同步目标学员。';
+    return`📡【未来7天小语种考试营销提醒｜${DateUtils.formatDate(today,true)}】\n\n最近7天内共有 ${radar.wechatEvents.length} 个值得关注的考试节点/更新，仅提醒提前7天、提前3天和当天节点。\n\n${sections.join('\n\n')}\n\n🎯 顾问建议动作：\n${actions}`;
   }
   function seedFor(event,today,type=''){const raw=`${DateUtils.dateKey(today)}|${event.eventId}|${type}`;let n=0;for(let i=0;i<raw.length;i++)n=(n*31+raw.charCodeAt(i))>>>0;return n}
   function pick(list,seed,offset=0){return list[(seed+offset)%list.length]}

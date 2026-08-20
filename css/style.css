@@ -51,7 +51,9 @@ body{background:radial-gradient(circle at 80% -10%,rgba(178,164,255,.18),transpa
 .poster-preview canvas{width:min(100%,390px);border-radius:8px}
 .poster-download{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 .poster-preview img{display:block;width:min(100%,390px);height:auto;margin:auto;border-radius:8px;box-shadow:0 18px 50px rgba(43,44,86,.2);-webkit-touch-callout:default;user-select:auto}.poster-mobile-tip{display:none;margin:-7px 0 13px;text-align:center;color:#787c91;font-size:11px}.poster-modal>.btns button{min-width:145px}
+.month-title .month-title-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px}.month-title-actions em{font-style:normal;color:#7378ce;background:rgba(255,255,255,.76);border:1px solid rgba(110,114,194,.11);border-radius:20px;padding:7px 11px;font-size:10px;white-space:nowrap}.month-poster-trigger{padding:8px 13px;border:0;color:#fff;background:linear-gradient(125deg,#586fd7,#8b67d8);box-shadow:0 8px 20px rgba(83,86,178,.18);white-space:nowrap}.month-poster-trigger:before{content:"▣";margin-right:6px}.month-poster-trigger:disabled{opacity:.65;cursor:wait}.month-calendar-poster-modal{max-width:680px}
 @media(max-width:720px){.poster-mobile-tip{display:block}.poster-modal>.btns{display:block}.poster-modal>.btns button{width:100%;min-width:0}.poster-preview img{width:100%}}
+@media(max-width:720px){.month-title{align-items:flex-start}.month-title .month-title-actions{display:grid;justify-items:end;gap:6px}.month-title-actions em{font-size:8px;padding:5px 7px}.month-poster-trigger{font-size:9px;padding:7px 9px}.month-calendar-poster-modal .poster-preview{max-height:68vh;overflow:auto}}
 .calendar-filters{grid-template-columns:repeat(4,minmax(110px,1fr))}
 
 /* Compact action list */
