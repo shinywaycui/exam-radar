@@ -1,6 +1,6 @@
 (function(){
   function varsFor(event,today=new Date()){
-    const s=event.session||{},b=s.basic||{},score=DateUtils.formatDate(s.scoreDate,true),examStart=DateUtils.formatDate(s.examPeriodStart||s.examDate,true),examEnd=DateUtils.formatDate(s.examPeriodEnd,true),examDate=examEnd?`${examStart}—${examEnd}`:examStart;return{'今天日期':DateUtils.formatDate(today,true),'语种':event.language||s.language,'考试名称':event.examName||s.examName,'考试场次':event.sessionName||s.sessionName,'剩余天数':event.daysUntil,'节点日期':DateUtils.formatDate(event.eventDate,true),'更新类型':event.updateType||s.updateType,'更新说明':event.updateNote||s.updateNote||'该考试场次今日新增至考试日历。','考试日期':examDate,'出分日期':score,'预计出分日期':score,'考试级别':b.levels,'考试频率':b.frequency,'通常考试月份':b.usualMonths}}
+    const s=event.session||{},b=s.basic||{},score=DateUtils.formatDate(s.scoreDate,true),examStart=DateUtils.formatDate(s.examPeriodStart||s.examDate,true),examEnd=DateUtils.formatDate(s.examPeriodEnd,true),examDate=examEnd?`${examStart}—${examEnd}`:examStart,regStart=DateUtils.formatDate(event.eventType==='报名注册开始'?s.registrationStart:(s.applicationStart||s.registrationStart),true),regEnd=DateUtils.formatDate(s.applicationDeadline,true),regTime=regStart&&regEnd?`${regStart}—${regEnd}`:regStart||regEnd,examDays=DateUtils.daysBetween(s.examPeriodStart||s.examDate,today);return{'今天日期':DateUtils.formatDate(today,true),'语种':event.language||s.language,'考试名称':event.examName||s.examName,'考试场次':event.sessionName||s.sessionName,'剩余天数':event.daysUntil,'节点日期':DateUtils.formatDate(event.eventDate,true),'更新类型':event.updateType||s.updateType,'更新说明':event.updateNote||s.updateNote||'该考试场次今日新增至考试日历。','考试日期':examDate,'出分日期':score,'预计出分日期':score,'报名时间':regTime,'报名开始':regStart,'报名截止':regEnd,'报名截止日期':regEnd,'等级':b.levels||'目标等级','XX':Math.max(0,examDays==null?event.daysUntil:examDays),'考试级别':b.levels,'考试频率':b.frequency,'通常考试月份':b.usualMonths}}
   function render(text,vars){return String(text||'').replace(/\{([^}]+)\}/g,(_,k)=>vars[k]!=null?String(vars[k]):'').replace(/\n{3,}/g,'\n\n').trim()}
   function updateText(e){const t=String(e.updateType||'');if(t==='首次录入')return'今日新增考试信息';if(t.includes('时间'))return'考试时间更新';return t?`信息更新：${t}`:'考试信息更新'}
   function dynamicLine(e){const icon=RadarEngine.emoji[e.language]||'🌐';if(e.eventType==='信息更新时间')return`${icon} ${e.examName}｜${e.sessionName}\n${updateText(e)}`;return`${icon} ${e.examName}｜${e.sessionName}\n${e.daysUntil===0?'今日'+e.eventType:`距离${e.eventType}${e.daysUntil>0?'还有':'已过去'}${Math.abs(e.daysUntil)}天`}`}
@@ -10,6 +10,81 @@
   }
   function seedFor(event,today,type=''){const raw=`${DateUtils.dateKey(today)}|${event.eventId}|${type}`;let n=0;for(let i=0;i<raw.length;i++)n=(n*31+raw.charCodeAt(i))>>>0;return n}
   function pick(list,seed,offset=0){return list[(seed+offset)%list.length]}
+  const registrationCopyLibrary={
+    upcoming:[
+      '📣官宣！ 【考试名称】报名即将正式启动\n⏰报名时间：【报名时间】\n👇报名流程提前收藏\n准备参加的宝子，记得定好闹钟！',
+      '🔥报名提醒！ 【考试名称】即将开放报名\n📅考试时间：【考试日期】\n⏰报名时间：【报名时间】\n备考计划可以正式提上日程啦！',
+      '⏰报名倒计时！ 【考试名称】报名即将启动\n🎯准备参加这次考试的同学\n账号注册、证件照片等资料可以提前准备啦！',
+      '📢考试党注意！ 【考试名称】最新考期公布\n📅考试：【考试日期】\n📝报名：【报名时间】\n👇准备冲刺的同学，现在就可以开始倒推备考计划',
+      '📣官宣考期！ 【考试名称】最新考试安排来了\n📝报名时间：【报名时间】\n📅考试时间：【考试日期】\n目标明确，接下来就是安心备考！',
+      '🇯🇵/🇰🇷/🇩🇪考试提醒 【考试名称】即将开放报名！\n👇报名流程已经整理好\n🎯今年准备拿下目标等级的宝子，可以行动啦！',
+      '📣【考试名称】报名来了！\n报名时间：【报名时间】\n考试时间：【考试日期】\n🔥从现在开始准备，还有多少备考时间？\n备考时间线已经可以倒推起来了',
+      '🎯目标：【考试名称】高分通关\n第一步：先把考试报上！\n⏰【报名时间】正式开放\n👇报名流程已经准备好',
+      '📢重要考试节点提醒\n【考试名称】报名即将启动\n📅考试时间：【考试日期】\n想参加这场考试的同学，别等报名后才开始准备！',
+      '🔥新一轮备考正式开始！\n【考试名称】报名通道即将开启\n🎯目标等级：【等级】\n⏰距离考试还有【XX】天\n现在开始规划刚刚好！',
+      '📣报名时间确定！\n【考试名称】将在【报名时间】正式开放报名\n👇报名入口+注意事项已整理\n热门场次建议提前做好准备',
+      '⚡手速提醒！ 【考试名称】报名即将开启\n热门考点/热门级别可能比较抢手\n👇账号、照片、证件信息提前准备好！',
+      '📣准备考【考试名称】的同学看过来\n最新报名时间已公布👇\n📝【报名时间】\n📅【考试日期】正式考试\n备考倒计时同步开启！',
+      '⏰报名倒计时3天！\n【考试名称】即将开放报名\n👇报名流程提前熟悉\n📣别等开抢当天才发现资料没准备好！',
+      '📣考位提醒！ 【考试名称】报名即将开始\n热门城市/考点建议尽早报名\n🎯考位锁定之后，就安心冲刺目标等级！',
+      '📣考试时间确定＝学习DDL来了\n【考试名称】考期正式公布\n📅考试：【考试日期】\n📝报名：【报名时间】\n目标清晰之后，备考效率真的会高很多！',
+      '🔥【考试名称】新考期来了\n准备今年拿证/出分的同学注意👇\n报名时间：【报名时间】\n考试时间：【考试日期】\n📚现在开始规划，还来得及！',
+      '⏰考试报名提醒\n【考试名称】报名时间已经确定\n👇报名前先确认：\n考试级别｜考点｜证件｜照片｜账号\n一次准备好，报名更顺利！',
+      '🔥又一场考试进入备考倒计时\n【考试名称】报名即将开启\n📅考试日期：【考试日期】\n想一次过级，现在就该进入备考状态啦！',
+      '📣报名别错过！ 【考试名称】报名窗口开放时间有限\n⏰【报名开始】—【报名截止】\n👇计划参加的同学建议尽早完成报名',
+      '🎯考试报名只是开始\n【考试名称】最新考期已经确定\n📅距离考试还有【XX】天\n词汇量/基础薄弱/刷题没方向的同学\n现在正是调整备考计划的关键期！',
+      '📣官宣！ 【考试名称】最新报名&考试时间公布\n📝报名：【报名时间】\n📅考试：【考试日期】\n👇考试流程、备考节奏一次理清\n准备参加的同学，可以开始冲刺啦！'
+    ],
+    today:[
+      '📣报名通道开启！ 【考试名称】今天正式开始报名\n👇报名入口+完整流程已整理\n⚡热门考点/场次建议尽早锁定！',
+      '🔥今天开抢！ 【考试名称】报名正式开启\n⚡热门考点名额拼手速\n👇报名流程提前看，关键时候不手忙脚乱！',
+      '🔥报名成功只是第一步\n【考试名称】报名正式启动！\n距离考试还有【XX】天\n📚词汇、语法、听力、阅读/写作\n现在就要开始安排冲刺节奏啦',
+      '📣报名启动！ 【考试名称】正式开放报名\n🎯目标等级已经确定的同学\n接下来就是锁定考位+进入系统备考！'
+    ],
+    deadline:[
+      '⏰报名进入倒计时！ 【考试名称】报名即将截止\n📅截止时间：【报名截止日期】\n还没报名的同学抓紧最后时间！',
+      '🚨最后报名提醒！ 【考试名称】报名即将截止\n⚠️准备参加本场考试的同学别错过\n👇报名完成后，就该正式进入冲刺节奏啦！',
+      '🚨报名即将截止！ 【考试名称】还没报名的同学注意\n⏰截止时间：【报名截止日期】\n错过可能就要再等下一场！',
+      '📢最后机会！ 【考试名称】报名进入最后倒计时\n👇准备参加本次考试的同学抓紧\n报名结束后，正式开启备考冲刺！'
+    ]
+  };
+  const scoreCopyLibrary={
+    upcoming:[
+      '📣出分提醒！ 🇯🇵【考试名称】成绩即将公布\n⏰查分时间：【出分日期】\n👇查分入口提前收藏好\n✨愿大家都能查到期待已久的好成绩！',
+      '📣成绩即将揭晓！ 【考试名称】将在【出分日期】开放查分\n🔍准考证/账号信息提前准备好\n✨努力了这么久，静候好消息！',
+      '⏰查分倒计时！ 【考试名称】即将迎来出分日\n📅【出分日期】记得及时查询\n✨愿所有认真备考的日子，都有满意的答案',
+      '📢查分提醒\n参加【考试名称】的同学注意啦\n⏰【出分日期】开放成绩查询\n✨希望打开页面的那一刻，就是惊喜！',
+      '📣重要提醒！ 【考试名称】即将公布成绩\n⏰【出分日期】开放查询\n👇查分流程提前码住\n✨愿大家的努力都兑换成理想分数',
+      '📣查分倒计时1天！\n明天就是【考试名称】出分日\n🔍账号密码今晚先准备好\n✨希望明天听到的都是好消息！',
+      '🎉高分喜报预定！ 【考试名称】即将开放查分\n📅时间：【出分日期】\n👇查分流程提前收藏\n祝大家全部顺利拿证！'
+    ],
+    today:[
+      '🔥可以查分啦！ 【考试名称】成绩正式开放查询\n📅查分时间：【出分日期】\n👇查分流程已经整理好\n🎉祝大家高分通关，顺利拿下目标等级！',
+      '🎉终于等到出分！ 【考试名称】成绩今日正式公布\n👇查分入口+查分流程已整理\n💯高分好运接接接！',
+      '📣今天出分！ 【考试名称】成绩查询正式开启\n🔍查完成绩别忘了保存成绩单\n🎉祝大家全部顺利过线！',
+      '🔥出分日来了！ 【考试名称】今天可以查成绩啦\n👇查分方式已经整理好\n💯坐等大家的高分喜报！',
+      '🎊成绩公布！ 【考试名称】正式开放查分\n📱账号密码提前准备好\n👇查分入口别找错\n祝大家一次过级！',
+      '💯高分时刻来了！ 【考试名称】今日开放查分\n🎯目标等级能不能拿下，今天见分晓\n祝大家全部高分通关！',
+      '📣【考试名称】出分啦！\n熬过备考，也等过成绩\n今天终于可以查分了👇\n✨愿大家查到的分数，比预期更高！',
+      '🔥查分通道开启！ 【考试名称】成绩正式公布\n👇查分入口+操作流程已整理\n🎉高分好运已经送达，请注意查收！',
+      '📅今日考试提醒\n【考试名称】成绩正式发布！\n🔍参加考试的同学记得及时查询\n✨期待朋友圈被高分喜报刷屏！',
+      '🎉恭喜进入查分环节！ 【考试名称】成绩开放查询\n📣查分后记得及时确认成绩/证书信息\n💯祝大家稳稳过级！',
+      '⏰就在今天！ 【考试名称】正式出分\n👇查分方式已经准备好\n🎯下一阶段学习规划，也可以提前安排起来啦！',
+      '🔥成绩揭晓时刻！ 【考试名称】查分正式开启\n💯过线的同学准备冲击下一等级\n📚暂时没达到目标的，也可以尽快调整下一阶段备考计划',
+      '📣成绩公布提醒\n【考试名称】成绩已经可以查询啦！\n👇查分流程已整理\n🎊查完成绩，记得来报喜！',
+      '🌟今天宜：查高分！\n【考试名称】正式开放成绩查询\n👇入口及流程提前收藏\n💯祝大家全部成功上岸！',
+      '📢参加【考试名称】的宝子集合！\n今天正式出分啦🔥\n查分入口已经开放\n✨祝大家手握高分，顺利奔赴下一阶段！',
+      '🎯检验学习成果的时候到了\n【考试名称】成绩正式公布\n📅【出分日期】开放查询\n👇查完成绩，也别忘了及时规划下一等级',
+      '📣【考试名称】成绩来了！\n备考几个月，就等今天\n👇查分流程已经整理好\n✨祝大家查到成绩时嘴角疯狂上扬！',
+      '🔥出分提醒请查收\n【考试名称】成绩查询开启\n💯过级不是终点\n下一等级/下一阶段学习也可以开始规划啦！',
+      '📣今天有件大事！ 【考试名称】出分啦\n👇成绩查询方式已整理\n🎊希望今天收到的，全是高分好消息！',
+      '⏰终于等到你！ 【考试名称】成绩正式公布\n📱记得及时登录官网查询\n✨愿认真备考的你，得到满意的答案',
+      '📣出分日＝开奖日\n【考试名称】今天正式查分\n👇查询入口已开放\n💯高分通关的宝子们，下一等级可以安排起来啦！',
+      '📢查成绩啦！ 【考试名称】正式出分\n🎯达到目标→继续冲刺下一等级\n📚还差一点→及时复盘调整备考计划\n每一次考试，都是下一阶段的起点',
+      '🔥【考试名称】出分！\n👇成绩查询入口+流程已整理\n💯愿大家高分过线、成功拿证\n下一阶段备考规划，也可以提前安排起来啦！'
+    ]
+  };
+  function curatedMomentCopy(type,event,vars,today){let pool;if(event.eventType==='正式报名截止')pool=registrationCopyLibrary.deadline;else if(event.eventType==='报名注册开始'||event.eventType==='正式报名开始')pool=registrationCopyLibrary[event.daysUntil===0?'today':'upcoming'];else if(event.eventType==='出分日期')pool=scoreCopyLibrary[event.daysUntil===0?'today':'upcoming'];else return null;const voice=examVoices[voiceKey(event)]||examVoices.generic,name=eventName(event),values={...vars,'考试名称':name};let text=pick(pool,seedFor(event,today,type));text=text.replace('🇯🇵/🇰🇷/🇩🇪',voice.flag).replace(/【([^】]+)】/g,(_,key)=>values[key]!=null&&values[key]!==''?String(values[key]):'以官方通知为准');const lines=text.split('\n');return{title:lines.shift(),body:lines.join('\n')}}
   function shortDate(value){const s=String(value||''),m=s.match(/\d{4}-(\d{2})-(\d{2})/);return m?`${Number(m[1])}.${Number(m[2])}`:value}
   function sessionLabel(event){const s=event.session||{},month=s.sessionMonth||String(event.sessionName||'').match(/(\d{1,2})月/)?.[1];return`${month?month+'月':''}${event.examName}`}
   function dynamicTitle(type,event,vars,today){const exam=vars['考试名称'],label=sessionLabel(event),seed=seedFor(event,today,type),node=({'报名注册开始':'注册','正式报名开始':'报名','正式报名截止':'报名截止','考试日期':'考试','出分日期':'出分'}[event.eventType]||event.eventType);if(event.eventType==='出分日期')return pick([`🔥${exam}成绩节点来了，查分后别急着停`,`📣${exam}出分在即，下一步这样安排`,`✨${exam}出分提醒，努力即将揭晓`],seed);if(event.daysUntil<0&&event.eventType==='考试日期')return pick([`🔥${exam}考后复盘正当时`,`考完${exam}，下一阶段怎么走？`,`📚${exam}考后不停步，趁热开启新计划`],seed);if(type.includes('节点提醒'))return pick([`‼${label}${node}${event.daysUntil>0?'倒计时':''}`,`📣${label}${event.daysUntil===0?node+'今日正式启动':node+'即将启动'}`,`⏰${exam}${node}重要提醒`],seed);if(type.includes('专业规划'))return pick([`🎯${exam}时间线明确，备考规划现在开始`,`📚准备${exam}，这份时间安排请收好`,`🚀${exam}新节点，学习节奏这样安排`],seed);if(type.includes('轻营销'))return pick([`✨想学一门新语言，现在正是好时候`,`☀${exam}节点更新，新的目标可以安排了`,`🌍从${exam}出发，打开更多可能`],seed);if(type.includes('冲刺'))return`🚀${exam}进入关键冲刺阶段`;return`${exam}考试节点提醒`}
@@ -54,6 +129,6 @@
     if(e.eventType==='报名注册开始'||e.eventType==='正式报名开始')return{title:`${v.flag}${name}${e.eventType==='报名注册开始'?'注册':'报名'}${e.daysUntil===0?'今日开启':'即将开启'}！`,body:`📣${session}重要时间节点\n⏰${when}${e.daysUntil>=0?'开启':''}\n👇提前确认${v.goal}，准备好账号、证件与缴费信息\n报名后可以围绕${v.prep}进入备考节奏～`};
     if(e.eventType==='考试日期'&&e.daysUntil>=0)return{title:`${v.flag}${name}${e.daysUntil===0?'今日开考':'考试倒计时'}！`,body:`🚀${session}${e.daysUntil===0?'今日开考':`还有${e.daysUntil}天`}\n📝最后阶段重点：${v.prep}\n✅证件与准考证 ✅路线与时间 ✅考试用品\n稳住节奏，祝大家顺利拿下目标！`};
     if(e.eventType==='考试日期'&&e.daysUntil<0)return{title:`${v.flag}${name}考后复盘｜下一步怎么走？`,body:`🎯趁记忆还清晰，先复盘${v.prep}\n📝记录薄弱点，再围绕${v.goal}调整下一阶段计划\n考完不是终点，而是下一次进阶的起点～`};return null}
-  function buildMoments(data,event,today=new Date()){if(!event)return[];const vars=varsFor(event,today);return matchMoments(data,event).map(t=>{const type=t.copyType||'节点提醒型',distinct=/品宣|节点提醒/.test(type)?distinctCopy(type,event,vars):null,dynamic=dynamicMomentsBody(type,event,vars,today),templateTitle=render(t.title,vars),templateBody=render(t.body,vars);return{...t,copyType:type,renderedTitle:distinct?.title||dynamicTitle(type,event,vars,today)||templateTitle||`${vars['考试名称']}考试提醒`,renderedBody:distinct?.body||dynamic||templateBody||`${vars['考试名称']}近期有新的考试节点，请及时关注官方安排。`}}).filter(t=>t.renderedTitle&&t.renderedBody)}
+  function buildMoments(data,event,today=new Date()){if(!event)return[];const vars=varsFor(event,today);return matchMoments(data,event).map(t=>{const type=t.copyType||'节点提醒型',curated=curatedMomentCopy(type,event,vars,today),distinct=/品宣|节点提醒/.test(type)?distinctCopy(type,event,vars):null,dynamic=dynamicMomentsBody(type,event,vars,today),templateTitle=render(t.title,vars),templateBody=render(t.body,vars);return{...t,copyType:type,renderedTitle:curated?.title||distinct?.title||dynamicTitle(type,event,vars,today)||templateTitle||`${vars['考试名称']}考试提醒`,renderedBody:curated?.body||distinct?.body||dynamic||templateBody||`${vars['考试名称']}近期有新的考试节点，请及时关注官方安排。`}}).filter(t=>t.renderedTitle&&t.renderedBody)}
   window.TemplateEngine={render,varsFor,buildWechat,buildMoments,updateText};
 })();
