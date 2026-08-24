@@ -1,5 +1,5 @@
 (function(){
-  const NODE_FIELDS=[['报名注册开始','registrationStart'],['正式报名开始','applicationStart'],['正式报名截止','applicationDeadline'],['考试日期','examDate'],['出分日期','scoreDate']];
+  const NODE_FIELDS=[['报名注册开始','registrationStart'],['正式报名开始','applicationStart'],['正式报名截止','applicationDeadline'],['准考证打印开始','ticketPrintStart'],['考试日期','examDate'],['出分日期','scoreDate']];
   const emoji={日语:'🇯🇵',韩语:'🇰🇷',德语:'🇩🇪',西班牙语:'🇪🇸',意大利语:'🇮🇹',俄语:'🇷🇺',法语:'🇫🇷'};
   function matchMarketingRule(event,rules){
     return rules.filter(r=>r.eventType===event.eventType&&event.daysUntil>=Number(r.startDays)&&event.daysUntil<=Number(r.endDays)).sort((a,b)=>Number(b.priority||0)-Number(a.priority||0)||a._order-b._order)[0]||null;
@@ -12,7 +12,7 @@
   function splitActions(v){return String(v||'').split(/[；;\n]+/).map(x=>x.trim()).filter(Boolean)}
   function uniqueActions(events){const seen=new Set(),out=[];events.sort(sortRadar).forEach(e=>splitActions(e.advisorActions).forEach(a=>{const contextual=/^(排查|提醒|关注|筛选|触达|私聊|当天|确认|考后|下一)/.test(a)?`${e.examName}｜${a}`:a; if(!seen.has(contextual)){seen.add(contextual);out.push(contextual)}}));return out}
   function sortRadar(a,b){return(Number(b.daysUntil===0)-Number(a.daysUntil===0))||(b.priority||0)-(a.priority||0)||Math.abs(a.daysUntil)-Math.abs(b.daysUntil)||a._order-b._order}
-  const defaultActions={'报名注册开始':'核对注册入口；提醒目标学员准备资料','正式报名开始':'提醒目标学员及时报名；确认报考级别与考点','正式报名截止':'排查尚未报名学员；提醒报名截止时间','考试日期':'发送考前关怀；提醒证件与入场安排','出分日期':'关注成绩发布；准备成绩复盘与后续规划'};
+  const defaultActions={'报名注册开始':'核对注册入口；提醒目标学员准备资料','正式报名开始':'提醒目标学员及时报名；确认报考级别与考点','正式报名截止':'排查尚未报名学员；提醒报名截止时间','准考证打印开始':'提醒考生及时打印准考证；核对考点与入场时间','考试日期':'发送考前关怀；提醒证件与入场安排','出分日期':'关注成绩发布；准备成绩复盘与后续规划'};
   function enrich(e){return{...e,marketingStage:e.marketingStage||(e.daysUntil===0?'今日节点':e.daysUntil>0?'近期节点':'节点复盘'),radarLevel:e.radarLevel||(e.daysUntil===0?'🚨':'📌'),advisorActions:e.advisorActions||defaultActions[e.eventType]||'关注考试最新节点'}}
   function sortByTiming(a,b){return(Number(b.daysUntil===0)-Number(a.daysUntil===0))||(Number(a.daysUntil<0)-Number(b.daysUntil<0))||Math.abs(a.daysUntil)-Math.abs(b.daysUntil)||(b.priority||0)-(a.priority||0)||a._order-b._order}
   function limitGoethe(list,max=4){let count=0;return list.filter(e=>!String(e.examName||'').includes('歌德')||count++<max)}
