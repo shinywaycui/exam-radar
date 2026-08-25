@@ -59,7 +59,7 @@
     c.fillStyle='#fff';c.fillRect(82,760,950,76);c.textAlign='left';c.fillStyle=ink;c.font='500 27px "PingFang SC","Microsoft YaHei",sans-serif';c.fillText(`${s.year||exam?.getFullYear()||''}年${month}月日本语能力测试（JLPT）报名有关安排如下：`,96,812);
     // 一、二仅替换考试日期；原表格、两条注释和底纹水印完整保留。
     c.fillStyle='#fff';c.fillRect(92,880,330,58);c.textAlign='left';c.fillStyle=ink;c.font='600 30px "PingFang SC","Microsoft YaHei",sans-serif';c.fillText(cnDate(s.examDate),96,925);
-    c.fillStyle='#fff';c.fillRect(103,1142,72,330);c.fillStyle=ink;c.font='700 29px "PingFang SC","Microsoft YaHei",sans-serif';wrap(c,`${month}月${exam?exam.getDate():''}日`,139,1215,38,42,4,'center');c.textAlign='left';
+    c.fillStyle='#fff';c.fillRect(103,1142,72,260);c.fillStyle=ink;c.font='700 29px "PingFang SC","Microsoft YaHei",sans-serif';wrap(c,`${month}月${exam?exam.getDate():''}日`,139,1215,38,42,4,'center');c.textAlign='left';
     // 四、五只局部覆盖日期文字，不重绘其他内容。
     c.fillStyle='#fff';c.fillRect(420,1830,600,112);c.fillStyle=red;c.font='800 29px "PingFang SC","Microsoft YaHei",sans-serif';c.fillText(`${monthDay(s.registrationStart)}7:00至${monthDay(s.applicationDeadline)}14:00`,445,1870);c.fillText(`${monthDay(s.applicationStart)}7:00至${monthDay(s.applicationDeadline)}14:00`,445,1925);
     c.fillStyle='#fff';c.fillRect(505,1958,535,82);c.fillStyle='#ffdf32';c.fillRect(515,1972,505,54);c.fillStyle=ink;c.font='800 28px "PingFang SC","Microsoft YaHei",sans-serif';c.fillText(s.noteTicketPrint||'以官方最新通知为准',530,2009);c.textAlign='left';return canvas}
