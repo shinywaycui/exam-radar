@@ -1,4 +1,4 @@
-const CACHE='exam-radar-v90';
+const CACHE='exam-radar-v91';
 const ASSETS=['./','index.html','css/style.css','assets/shinyway-logo.png','assets/shinyway-building-optimized.jpg','assets/shinyway-building-mobile-optimized.jpg','assets/shinyway-info-template.jpg','assets/topik-score-template.jpg','assets/topik-korea-registration-template.png','assets/testdaf-score-template.jpg','assets/testdaf-registration-template.png','assets/jlpt-score-template.jpg','assets/jlpt-registration-template.jpg','js/app.js','js/analytics.js','js/localExcelData.js','js/excelLoader.js','js/dateUtils.js','js/dataNormalizer.js','js/radarEngine.js','js/templateEngine.js','js/posterTemplateData.js','js/posterEngine.js','js/inspirationLibrary.js','js/invitationLibrary.js','js/calendar.js','js/storage.js','js/ui.js','lib/xlsx.full.min.js','manifest.webmanifest','小语种考试营销雷达_数据模板_V2.xlsx'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
