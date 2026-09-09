@@ -18,6 +18,7 @@
   function limitGoethe(list,max=4){let count=0;return list.filter(e=>!String(e.examName||'').includes('歌德')||count++<max)}
   function isHomeRadarSession(session){
     if(!String(session.examName||'').includes('歌德'))return true;
+    if(!/上海/.test(`${session.region||''}${session.sessionName||''}`))return true;
     const name=String(session.sessionName||'');
     return /\b(A1|B1|B2)\b/i.test(name)&&!/\b(A2|C1|C2)\b/i.test(name);
   }
