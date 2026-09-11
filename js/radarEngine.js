@@ -16,6 +16,13 @@
   function enrich(e){return{...e,marketingStage:e.marketingStage||(e.daysUntil===0?'今日节点':e.daysUntil>0?'近期节点':'节点复盘'),radarLevel:e.radarLevel||(e.daysUntil===0?'🚨':'📌'),advisorActions:e.advisorActions||defaultActions[e.eventType]||'关注考试最新节点'}}
   function sortByTiming(a,b){return(Number(b.daysUntil===0)-Number(a.daysUntil===0))||(Number(a.daysUntil<0)-Number(b.daysUntil<0))||Math.abs(a.daysUntil)-Math.abs(b.daysUntil)||(b.priority||0)-(a.priority||0)||a._order-b._order}
   function limitGoethe(list,max=4){let count=0;return list.filter(e=>!String(e.examName||'').includes('歌德')||count++<max)}
+  function keepMomentsNode(e,today){
+    if(!['报名注册开始','正式报名开始'].includes(e.eventType)||e.daysUntil>=0)return true;
+    const deadline=DateUtils.parseExcelDate(e.session?.applicationDeadline);
+    if(!deadline)return false;
+    // 报名截止已进入 7 天窗口时，只展示“截止”节点，避免同时出现已经过去的“即将报名”。
+    return DateUtils.daysBetween(deadline,today)>7;
+  }
   function isHomeRadarSession(session){
     if(!String(session.examName||'').includes('歌德'))return true;
     if(!/上海/.test(`${session.region||''}${session.sessionName||''}`))return true;
@@ -26,7 +33,7 @@
     const radarSessions=data.sessions.filter(isHomeRadarSession),events=buildExamEvents(radarSessions,data.rules,today).filter(e=>e.eventType!=='出分日期'||e.daysUntil>=-2),todayEvents=events.filter(e=>e.daysUntil===0),todayUpdates=data.sessions.filter(s=>DateUtils.isSameDay(s.infoUpdatedAt,today)).map((s,i)=>({eventId:`${s.recordId}-update`,eventType:'信息更新时间',eventDate:DateUtils.dateKey(today),daysUntil:0,session:s,examName:s.examName,language:s.language,sessionName:s.sessionName,updateType:s.updateType,updateNote:s.updateNote,_order:i}));
     // 所有首页模块都从最新场次日期重新计算：优先今天和未来节点，只保留最近 7 天的已过节点用于复盘。
     const month=DateUtils.parseExcelDate(today),monthEvents=events.filter(e=>e.year===month.getFullYear()&&e.month===month.getMonth()+1&&e.daysUntil>=-7).map(enrich),nearby=events.filter(e=>e.daysUntil>=0&&e.daysUntil<=31).map(enrich),monthlyFocus=limitGoethe([...monthEvents,...nearby].filter((e,i,a)=>a.findIndex(x=>x.eventId===e.eventId)===i).sort(sortByTiming));
-    const upcomingEvents=events.filter(e=>e.daysUntil>0&&e.daysUntil<=7).map(enrich).sort(sortByTiming),momentPool=events.filter(e=>e.daysUntil>=-7&&e.daysUntil<=7).map(enrich).sort(sortByTiming),momentsRecommendations=limitGoethe(momentPool.filter(e=>!e.rule||DataNormalizer.isEnabled(e.rule.generateMoments)));
+    const upcomingEvents=events.filter(e=>e.daysUntil>0&&e.daysUntil<=7).map(enrich).sort(sortByTiming),momentPool=events.filter(e=>e.daysUntil>=-7&&e.daysUntil<=7).filter(e=>keepMomentsNode(e,today)).map(enrich).sort(sortByTiming),momentsRecommendations=limitGoethe(momentPool.filter(e=>!e.rule||DataNormalizer.isEnabled(e.rule.generateMoments)));
     const updateActions=todayUpdates.slice(0,3).map((e,i)=>({...e,advisorActions:`核对${e.examName}最新信息；同步相关顾问与学员`,priority:110-i})),actionSource=[...todayEvents.map(enrich),...upcomingEvents,...updateActions].slice(0,10),wechatNodes=events.filter(e=>e.daysUntil>=0&&e.daysUntil<=7&&(!e.rule||DataNormalizer.isEnabled(e.rule.generateWechat))).map(enrich);
     return{events,todayEvents,todayUpdates,monthlyFocus,advisorActions:uniqueActions(actionSource),wechatEvents:[...wechatNodes,...todayUpdates].filter((x,i,a)=>a.findIndex(y=>y.eventId===x.eventId)===i).sort(sortByTiming),momentsRecommendations,upcomingEvents};
   }

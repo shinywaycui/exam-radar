@@ -1,0 +1,51 @@
+.jp-layout .matrix-title .section-kicker{color:#d65b62}
+.jp-layout .matrix-countries button.active{background:linear-gradient(135deg,#cc4f5b,#e87572);box-shadow:0 8px 20px rgba(196,67,79,.22)}
+.jp-layout .kr-single-scenario button.active{border-color:#ef9a9d;background:linear-gradient(135deg,#fff7f7,#fff)}
+.jp-layout .kr-single-scenario button.active i{background:#d85a64}
+.jp-layout .jp-scenarios{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:9px 0}
+.jp-layout .jp-scenarios button{position:relative;min-height:58px;border:1px solid #e3e5ef;border-radius:14px;background:#fff;box-shadow:0 5px 14px rgba(42,50,91,.06)}
+.jp-layout .jp-scenarios button.active{border-color:#e17c82;background:linear-gradient(135deg,#fff3f3,#fff);box-shadow:0 8px 18px rgba(194,73,84,.12)}
+.jp-layout .jp-scenarios button:nth-child(2).active{border-color:#7482cf;background:linear-gradient(135deg,#f0f2ff,#fff)}
+.jp-layout .jp-scenarios button:nth-child(3).active{border-color:#2e9a87;background:linear-gradient(135deg,#ecfaf6,#fff)}
+.jp-layout .jp-scenarios button:nth-child(4).active{border-color:#b27638;background:linear-gradient(135deg,#fff6e9,#fff)}
+.jp-layout .jp-scenarios button i{background:#d75a64}.jp-layout .jp-scenarios button:nth-child(2) i{background:#5868bd}.jp-layout .jp-scenarios button:nth-child(3) i{background:#288d7c}.jp-layout .jp-scenarios button:nth-child(4) i{background:#ad753e}
+.jp-layout .jp-scenarios button em{display:none}.jp-layout .jp-scenarios button.active em{display:block}
+.jp-layout .route-options.jp-routes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;min-width:390px}
+.jp-layout .route-options.jp-routes button{min-width:0;padding:8px 28px 8px 12px}
+.jp-layout .route-options.jp-routes button:before{content:none!important;display:none!important}
+.jp-layout .route-options.jp-routes button{padding-left:12px!important}
+.jp-layout .route-options.jp-routes button:nth-of-type(1){--route:#d65460;--route-soft:#fff0f1}
+.jp-layout .route-options.jp-routes button:nth-of-type(2){--route:#2587a6;--route-soft:#eaf8fb}
+.jp-layout .route-options.jp-routes button:nth-of-type(3){--route:#6656ba;--route-soft:#f0edff}
+.jp-layout .route-options.jp-routes button b{font-size:10px;white-space:nowrap}
+.jp-layout .kr-era div:nth-child(3){background:linear-gradient(90deg,#fff0f1,#f4f0ff);color:#a34658}
+.jp-layout:not(.jp-sgu) .kr-era div:nth-child(2){grid-column:2/8}
+.jp-layout:not(.jp-sgu) .kr-era div:nth-child(3){grid-column:8/calc(var(--krcols) + 2)}
+.jp-layout .matrix-time div.apply{background:linear-gradient(145deg,#d65a63,#e77770)}
+.jp-layout .matrix-lane.language article p{border-color:#dce4fa;background:#f1f4fc}
+.jp-layout .jp-course{border-color:#d8e2f7;background:linear-gradient(145deg,#f8faff,#eef3ff);box-shadow:0 5px 12px rgba(53,79,145,.09)}
+.jp-layout .jp-course span{color:#5f6881}.jp-layout .jp-course b{color:#1e2946;font-size:12px!important}.jp-layout .jp-course em,.jp-layout .jp-course small{background:#deebff!important;color:#1766bd!important;font-size:8px!important}
+.jp-layout .jp-eju{padding:7px;border:1px solid #f2c4b7;border-radius:9px;background:linear-gradient(145deg,#fff7f2,#fff0e9);box-shadow:0 5px 12px rgba(193,91,65,.1)}
+.jp-layout .jp-eju span,.jp-layout .jp-eju b,.jp-layout .jp-eju em{display:block}.jp-layout .jp-eju span{color:#c25045;font-size:8px;font-weight:900}.jp-layout .jp-eju b{margin:4px 0;color:#743229;font-size:10px;line-height:1.3}.jp-layout .jp-eju em{color:#d55b49;font-size:8px;font-style:normal;font-weight:900}
+.jp-layout .matrix-lane.application article p{border-color:#d7ecec;background:#edf8f7}
+.jp-layout mark{background:#e4ecff;color:#275fac}
+.jp-layout .matrix-lane.language article:nth-child(n+7) p{font-size:8px!important}
+.jp-layout .jp-single-route{align-items:center}.jp-layout .jp-route-badge{min-width:180px;padding:9px 18px;border:1px solid #cad1f5;border-radius:13px;background:linear-gradient(135deg,#eef1ff,#fff);box-shadow:0 6px 16px rgba(75,89,168,.1)}
+.jp-layout .jp-route-badge small,.jp-layout .jp-route-badge b{display:block}.jp-layout .jp-route-badge small{color:#7b829e;font-size:8px;font-weight:800}.jp-layout .jp-route-badge b{margin-top:3px;color:#4d5eb3;font-size:12px}
+.jp-layout.jp-sgu .matrix-time div.apply{background:linear-gradient(145deg,#5969bd,#7b6bc4)}
+.jp-layout.jp-sgu .kr-era div:nth-child(3){background:linear-gradient(90deg,#eff1ff,#f4efff);color:#5962ab}
+.jp-layout.jp-sgu-master .matrix-time div.apply{background:linear-gradient(145deg,#5969bd,#398da3)}
+.jp-layout.jp-master .matrix-time div.apply{background:linear-gradient(145deg,#268f82,#46aa96)}
+.jp-layout.jp-master .kr-era div:nth-child(3){background:linear-gradient(90deg,#e9f8f4,#edf6ff);color:#237b70}
+.jp-layout.jp-master .matrix-grid{grid-template-columns:66px repeat(var(--krcols),minmax(0,1fr));gap:4px;padding-left:5px;padding-right:5px}.jp-layout.jp-master .kr-era{grid-template-columns:66px repeat(var(--krcols),1fr);gap:4px}
+.jp-layout.jp-master .matrix-lane .kr-course em,.jp-layout.jp-master .matrix-lane .kr-course small{width:auto!important;padding:2px 3px!important;white-space:normal}
+.jp-layout.jp-master .matrix-lane.language article{padding:4px!important;gap:4px!important}.jp-layout.jp-master .matrix-lane.language article p{padding:3px!important;font-size:7.5px!important;line-height:1.25!important}
+.jp-layout.jp-masterprep .matrix-time div.apply{background:linear-gradient(145deg,#a9763f,#c99858)}
+.jp-layout.jp-masterprep .kr-era div:nth-child(3){background:linear-gradient(90deg,#fff5e8,#eef7f4);color:#94602f}
+.jp-layout[style*="--krcols:14"] .matrix-grid{grid-template-columns:64px repeat(var(--krcols),minmax(0,1fr))}
+.jp-layout[style*="--krcols:14"] .kr-era{grid-template-columns:64px repeat(var(--krcols),1fr);gap:4px}
+.jp-layout[style*="--krcols:14"] .matrix-grid{gap:4px;padding-left:5px;padding-right:5px}
+.jp-layout[style*="--krcols:14"] .kr-course{padding:4px!important}.jp-layout[style*="--krcols:14"] .kr-course span{font-size:7px!important}.jp-layout[style*="--krcols:14"] .kr-course b{font-size:10px!important}
+.jp-layout[style*="--krcols:14"] .matrix-lane .kr-course em,.jp-layout[style*="--krcols:14"] .matrix-lane .kr-course small{width:auto!important;padding:2px 3px!important;font-size:7px!important;white-space:normal}
+@media(max-width:1150px) and (min-width:721px){.jp-layout .route-options.jp-routes{min-width:460px}.jp-layout .route-options.jp-routes button b{font-size:8px}}
+@media(max-width:720px){.jp-layout .route-options.jp-routes{display:flex;min-width:0;overflow-x:auto}.jp-layout .route-options.jp-routes button{min-width:150px}}
