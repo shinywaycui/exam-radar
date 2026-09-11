@@ -111,3 +111,12 @@
   body.plan-mode .jp-masterprep .matrix-lane.language{flex:1.32!important}
   body.plan-mode .jp-masterprep .matrix-lane.application{flex:.93!important}
 }
+
+/* A non-fullscreen browser can leave too little usable height for the complete
+   roadmap. Let the page scroll instead of clipping the lower application row. */
+@media(min-width:721px) and (max-height:900px){
+  main:has(.matrix-page),body.plan-mode main{height:auto;min-height:100vh;min-height:100dvh;overflow:visible}
+  main:has(.matrix-page)>.content,body.plan-mode #app.content{flex:none;height:auto;min-height:0;overflow:visible}
+  .content:has(.matrix-page) .matrix-page,body.plan-mode #app.content>.matrix-page{height:auto;min-height:0}
+  body.plan-mode .matrix-shell{flex:none;height:600px;min-height:600px}
+}
