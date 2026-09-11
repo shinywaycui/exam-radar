@@ -72,7 +72,7 @@ const masterPrep={name:'研究生预科 → 修士',label:'毕业次年4月入�
 ['大三下暑期','保持日语及英语能力；JLPT和托福持续刷分；按目标院校要求补充语言成绩','进行教授面试辅导；参加教授面试；争取获得教授内诺'],
 ['大四上+寒假','持续提升学术日语及专业英语能力；JLPT和托福持续刷分','继续参加科研、实践或实习；完善研究计划书及材料；参加教授或研究科面试'],
 ['大四下4–8月','加强学术日语及专业能力；准备赴日研究及修士考试','确定院校并完成研究生出愿；获得入学许可并办理在留；办理签证及行前准备'],
-['毕业当年9–10月','入读研究生（预科）；强化专业课、研究计划书及修士考试','正式入读研究生预科；跟随教授开展研究；准备修士考试出愿'],
+['毕业当年9–10月','强化专业课、研究计划书及修士考试','正式入读研究生预科；跟随教授开展研究；准备修士考试出愿'],
 ['12月–次年3月','持续强化专业课、研究计划书及面试','就读研究生并报名修士考试；参加修士笔试及面试；获得考试结果'],
 ['毕业次年4月','完成修士入学前语言及专业准备','完成修士入学手续；结束研究生阶段；正式入读大学院修士']]};
 function blocks(s,type){let a=s.split('；').filter(Boolean);if(type==='apply'&&a.length>3){const size=Math.ceil(a.length/3),g=[];for(let i=0;i<a.length;i+=size)g.push(a.slice(i,i+size).join('；'));a=g}return a.map(t=>{if(type==='learn'){const c=t.match(/^(.+?(?:班|全日制))：日语(N[1-5])，(\d+课时)(?:，每周(.+小时)|，集中学习(.+))$/);if(c)return`<div class="kr-course jp-course"><span>${c[1]}</span><b>日语 ${c[2]}</b><em>${c[3]}</em><small>${c[4]?'每周'+c[4]:c[5]}</small></div>`;if(t.startsWith('EJU课程：')){const p=t.replace('EJU课程：','').split('，');return`<div class="jp-eju"><span>EJU 集中课程</span><b>${p[0]}</b><em>${p.slice(1).join('，')}</em></div>`}}return`<p>${t.replace(/(JLPT|EJU|SGU|SAT|ACT|N[1-5]|托福|雅思|80\+|90-100\+|6\.0\+|6\.5-7\.0\+|在留资格)/g,'<mark>$1</mark>')}</p>`}).join('')}

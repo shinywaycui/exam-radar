@@ -92,3 +92,22 @@
 }
 .de-master .route-options button{min-width:190px}
 .matrix-page:not(.kr-german-layout) .matrix-scenarios:has(button:nth-child(2):last-child){grid-template-columns:repeat(2,1fr)}
+
+/* Chrome-compatible viewport fitting. The body class is set by planCapture.js,
+   so this does not depend on :has() support in older managed Chrome builds. */
+@media(min-width:721px){
+  body.plan-mode main{display:flex;height:100vh;height:100dvh;min-height:0;flex-direction:column;overflow:hidden}
+  body.plan-mode main>.topbar{flex:0 0 auto;min-height:74px;padding-top:14px;padding-bottom:12px}
+  body.plan-mode main>.topbar .eyebrow{font-size:9px}
+  body.plan-mode main>.topbar h1{margin:2px 0;font-size:22px}
+  body.plan-mode #app.content{flex:1;height:auto;min-height:0;overflow:hidden;padding-top:12px;padding-bottom:4px}
+  body.plan-mode #app.content>.matrix-page{height:100%;min-height:0}
+}
+@media(min-width:721px) and (max-height:850px){
+  body.plan-mode main>.topbar{min-height:58px;padding-top:7px;padding-bottom:7px}
+  body.plan-mode main>.topbar .eyebrow{display:none}
+  body.plan-mode main>.topbar h1{margin:0;font-size:19px}
+  body.plan-mode #app.content{padding-top:6px;padding-bottom:3px}
+  body.plan-mode .jp-masterprep .matrix-lane.language{flex:1.32!important}
+  body.plan-mode .jp-masterprep .matrix-lane.application{flex:.93!important}
+}
