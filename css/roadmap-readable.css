@@ -118,5 +118,7 @@
   main:has(.matrix-page),body.plan-mode main{height:auto;min-height:100vh;min-height:100dvh;overflow:visible}
   main:has(.matrix-page)>.content,body.plan-mode #app.content{flex:none;height:auto;min-height:0;overflow:visible}
   .content:has(.matrix-page) .matrix-page,body.plan-mode #app.content>.matrix-page{height:auto;min-height:0}
-  body.plan-mode .matrix-shell{flex:none;height:600px;min-height:600px}
+  body.plan-mode .matrix-shell{flex:none;height:auto;min-height:0}
+  body.plan-mode .matrix-lane{flex:none!important;min-height:0}
+  body.plan-mode .matrix-lane article{justify-content:flex-start}
 }
