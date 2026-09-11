@@ -11,10 +11,9 @@
   const routeData={
     direct:{label:'高考成绩 ≥ 70%',title:'高考直申路径',summary:'达到高考满分70%，进入审核、语言达标与本科申请流程。',later:[
       {time:'7—8月',tone:'apply',language:['国内继续学习德语','或先到德国学习德语'],apply:['等待审核结果'],detail:'按语言基础选择学习地点'},
-      {time:'9—10月',tone:'apply',language:['继续冲刺德适 / 德福'],apply:['准备资料并等待审核','审核通过后办理签证'],detail:'明确目标入学季'},
-      {time:'11—次年1月',tone:'apply',language:['德适通过后持续学习'],apply:['申请先到德国学语言','办理签证赴德'],detail:'也可衔接次年4月课程'},
-      {time:'次年4—7月',tone:'milestone',language:['语言通过后申请冬季入学'],apply:['申请预科 / 转专业项目'],detail:'同步关注申请截止时间'},
-      {time:'次年8—10月',tone:'milestone',language:['未达语言则继续学习'],apply:['获签赴德','完成大学注册'],detail:'正式衔接德国本科'}
+      {time:'9月—次年1月',tone:'apply',language:['继续冲刺德福考试'],apply:['可选择国内继续学习','或先赴德国学习语言'],detail:'根据语言成绩选择方案'},
+      {time:'次年4—7月',tone:'milestone',language:['最低考出B2等级','德福通过后持续学习'],apply:['申请德国本科直入'],detail:'同步关注申请截止时间'},
+      {time:'次年8—10月',tone:'milestone',language:['未达德福16分则国内续学','达标后入境德国'],apply:['获签赴德','完成大学注册'],detail:'正式衔接德国本科'}
     ]},
     prep:{label:'低于高考满分60%，参加团审项目校考，等预录取',title:'团审项目路径',summary:'低于高考满分60%，参加团审项目校考，等预录取。',later:[
       {time:'7—8月',tone:'apply',language:['继续学习德语'],apply:['参加团审项目校考','等待项目预录取'],detail:'按项目要求准备校考'},
@@ -25,17 +24,17 @@
     ]}
   };
   const masterItems=[
-    {time:'大一上',tone:'language',language:['秋季周末/晚班｜德语 A1｜240课时 · 每周6–10小时','寒假｜复习巩固'],apply:['明确德国硕士方向','保持GPA，建议均分80+','关注课程匹配与APS要求']},
-    {time:'大一下',tone:'language',language:['周末/晚班｜德语 A2｜240课时 · 每周6–10小时','暑假全日制｜德语 B1｜180课时 · 约1个月'],apply:['保持GPA及课程匹配度','参加实习、竞赛或科研','了解院校与APS基本要求']},
-    {time:'大二上',tone:'language',language:['秋季周末/晚班｜德语 B1+｜150课时 · 每周6–10小时','寒假｜复习巩固'],apply:['明确专业及选校范围','持续提升GPA与课程匹配','提前了解APS审核要求']},
-    {time:'大二下',tone:'language',language:['周末/晚班｜德语 B2｜240课时 · 每周6–10小时','暑假全日制｜德福备考｜160课时 · 约20天'],apply:['初步确定院校梯度','评估TestAS / APS面谈路径','参加专业实习并制作简历']},
-    {time:'大三上',tone:'decision',language:['参加首次德福考试','按成绩安排2–3次刷分'],apply:['核对目标课程匹配','结合个人情况规划APS时间','关注GRE / GMAT要求']},
-    {time:'大三下及暑假6–8月',tone:'apply',language:['持续德福刷分','按成绩强化，未达标持续备考','目标德福4×4或院校要求'],apply:['确定最终院校及专业','按确认路径推进APS审核','同步准备申请材料与背景']},
-    {time:'大四上9–10月',tone:'apply',language:['继续准备德福 / 歌德考试'],apply:['推进TestAS / APS面谈','补充所需学业材料','同步准备硕士申请']},
+    {time:'大一上',tone:'language',language:['秋季周末/晚班｜德语 A1｜240课时 · 每周6–10小时','寒假｜复习巩固'],apply:['明确德国硕士方向','保持GPA，建议均分80+']},
+    {time:'大一下',tone:'language',language:['周末/晚班｜德语 A2｜240课时 · 每周6–10小时','暑假全日制｜德语 B1｜180课时 · 约1个月'],apply:['保持GPA并重视课程匹配','参加实习、竞赛或科研']},
+    {time:'大二上',tone:'language',language:['秋季周末/晚班｜德语 B1+｜150课时 · 每周6–10小时','寒假｜复习巩固'],apply:['持续提升GPA与课程匹配']},
+    {time:'大二下',tone:'language',language:['周末/晚班｜德语 B2｜240课时 · 每周6–10小时','暑假全日制｜德福备考｜160课时 · 约20天'],apply:['初步确定院校梯度','评估TestAS / APS面谈路径']},
+    {time:'大三上',tone:'decision',language:['参加首次德福考试','按成绩安排2–3次刷分'],apply:['确定最终院校及专业','规划APS审核时间与方式','确认GRE / GMAT要求']},
+    {time:'大三下及暑假6–8月',tone:'apply',language:['持续德福刷分','按成绩强化，未达标持续备考','目标德福4×4或院校要求'],apply:['推进TestAS / APS面谈','按确认路径推进APS审核','准备硕士申请材料']},
+    {time:'大四上9–10月',tone:'apply',language:['继续德福 / 歌德考试','考出GRE / GMAT（如要求）'],apply:['补充所需学业材料','同步准备硕士申请']},
     {time:'大四上10月–次年2月',tone:'apply',language:['语言未达标则继续刷分'],apply:['按个人情况完成APS审核','取得APS审核证书','完善选校及申请方案']},
     {time:'大四下3–4月',tone:'apply',language:['准备德福 / 歌德考试','冲刺最终语言成绩'],apply:['开具前7学期成绩单','完善硕士正式申请材料','确定最终院校及专业']},
     {time:'大四下5–7月',tone:'milestone',language:['冲刺目标院校语言要求','按院校政策补充语言成绩'],apply:['正式递交硕士申请','跟进院校审核及补件','确认最终录取方案']},
-    {time:'毕业后7–9月',tone:'milestone',language:['保持德语能力','强化学术及专业场景德语'],apply:['获取录取并确定院校','按需补充APS材料并办签证','准备住宿、保险及行前事项']},
+    {time:'毕业后7–9月',tone:'milestone',language:['保持德语能力','强化学术及专业场景德语'],apply:['获取录取并确定院校','完成APS补审并办理签证','准备住宿、保险及行前事项']},
     {time:'10–11月',tone:'milestone',language:['进入学术德语及专业课程学习'],apply:['赴德完成注册及入学','入读硕士专业或语言班']}
   ];
   function tabs(state){return`<div class="selector-section scenario-selector"><div class="selector-caption"><i>2</i><span><b>选择申请身份</b><small>不同学习阶段对应不同规划方案</small></span></div><div class="matrix-scenarios">${scenarios.map(s=>`<button class="${state.scenario===s[0]?'active':''}" data-plan-scenario="${s[0]}"><i>${s[0]==='master'?'◇':'▣'}</i><span><b>${s[1]}</b><small>${s[2]}</small></span></button>`).join('')}</div></div>`}
@@ -57,6 +56,7 @@
       .replace('matrix-grid matrix-lane language"','matrix-grid matrix-lane language" style="flex:1.38"')
       .replace('matrix-grid matrix-lane application"','matrix-grid matrix-lane application" style="flex:.72"');
     if(state?.country==='DE'&&state?.scenario==='master')html=html.replace('具体要求以德国院校及官方最新政策为准。','APS审核时间及方式因人而异，应结合在读学期、学业情况、申请时间及最新政策确认。');
+    if(state?.country==='DE'&&state?.scenario==='highschool')html=html.replace('<section class="matrix-page">',`<section class="matrix-page de-undergrad" style="--decols:${state.route==='direct'?9:10}">`);
     return html;
   };
 })();

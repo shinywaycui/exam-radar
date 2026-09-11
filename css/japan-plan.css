@@ -42,6 +42,13 @@
 .jp-layout.jp-master .matrix-lane.language article{padding:4px!important;gap:4px!important}.jp-layout.jp-master .matrix-lane.language article p{padding:3px!important;font-size:7.5px!important;line-height:1.25!important}
 .jp-layout.jp-masterprep .matrix-time div.apply{background:linear-gradient(145deg,#a9763f,#c99858)}
 .jp-layout.jp-masterprep .kr-era div:nth-child(3){background:linear-gradient(90deg,#fff5e8,#eef7f4);color:#94602f}
+.jp-layout.jp-masterprep .matrix-lane.language,.jp-layout.jp-masterprep .matrix-lane.application{flex:1!important}
+.jp-layout.jp-masterprep .matrix-lane.language{overflow:visible;z-index:2}
+.jp-layout.jp-masterprep .matrix-lane.language article.merged-tail{z-index:5;height:calc(200% + 13px);padding:8px!important;border-bottom-color:rgba(71,78,130,.08)!important;background:linear-gradient(180deg,#fff 0%,#fff 43%,#f4faf8 43%,#f4faf8 100%);box-shadow:0 8px 22px rgba(53,64,105,.09)}
+.jp-layout.jp-masterprep .merged-tail-apply{display:grid;gap:5px;margin-top:10px;padding-top:9px;border-top:1px dashed rgba(49,132,116,.2)}
+.jp-layout.jp-masterprep .merged-tail-apply p{padding:6px!important;background:#eaf6f3!important;color:#285f58!important;font-size:8px!important;line-height:1.3!important}
+.jp-layout.jp-masterprep .matrix-lane.application article.merged-tail-ghost{visibility:hidden}
+.jp-layout.jp-masterprep .matrix-lane.application article.merged-tail-ghost:before{display:none}
 .jp-layout[style*="--krcols:14"] .matrix-grid{grid-template-columns:64px repeat(var(--krcols),minmax(0,1fr))}
 .jp-layout[style*="--krcols:14"] .kr-era{grid-template-columns:64px repeat(var(--krcols),1fr);gap:4px}
 .jp-layout[style*="--krcols:14"] .matrix-grid{gap:4px;padding-left:5px;padding-right:5px}

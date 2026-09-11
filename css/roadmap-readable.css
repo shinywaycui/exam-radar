@@ -54,5 +54,41 @@
 .de-master .matrix-lane.language .course-line{padding:5px!important}.de-master .matrix-lane.language .course-line span{font-size:7px!important}.de-master .matrix-lane.language .course-line b{font-size:8.5px!important;line-height:1.2}.de-master .matrix-lane.language .course-line em{font-size:7px!important;line-height:1.2;padding:2px 4px!important}
 .de-master .matrix-lane.language .course-line em{display:block;max-width:100%;white-space:normal;overflow-wrap:anywhere;text-align:left}
 .de-master .matrix-lane.application article p{padding:6px 5px!important;font-size:8px!important;line-height:1.35!important;font-weight:750!important}
+.de-undergrad .matrix-grid,.de-undergrad .matrix-era{grid-template-columns:80px repeat(var(--decols),minmax(0,1fr))}.de-undergrad .matrix-era .after{grid-column:7/calc(var(--decols) + 2)}
+@media(max-width:1100px) and (min-width:721px){.de-undergrad .matrix-grid,.de-undergrad .matrix-era{grid-template-columns:65px repeat(var(--decols),minmax(0,1fr))}}
+
+/* Keep the complete roadmap inside desktop browser viewports, including browsers
+   whose toolbars leave less usable vertical space. */
+@media(min-width:721px){
+  main:has(.matrix-page){display:flex;height:100dvh;min-height:0;flex-direction:column;overflow:hidden}
+  main:has(.matrix-page)>.topbar{flex:0 0 auto}
+  main:has(.matrix-page)>.content{flex:1;height:auto;min-height:0;overflow:hidden}
+  .content:has(.matrix-page) .matrix-page{height:100%;min-height:0}
+}
+@media(min-width:721px) and (max-height:850px){
+  .topbar:has(+ .content .matrix-page){min-height:60px;padding-top:8px;padding-bottom:8px}
+  .topbar:has(+ .content .matrix-page) .eyebrow{display:none}
+  .topbar:has(+ .content .matrix-page) h1{font-size:19px;margin:0}
+  .content:has(.matrix-page){padding-top:7px;padding-bottom:4px}
+  .matrix-title h2{font-size:19px}.matrix-title .section-kicker{margin-bottom:1px;font-size:8px}
+  .matrix-scenarios{margin:5px 0}.matrix-scenarios button{padding-top:6px;padding-bottom:6px}
+  .matrix-route{margin-bottom:5px;padding-top:5px;padding-bottom:5px}
+  .matrix-era{flex-basis:35px;padding-top:4px;padding-bottom:4px}
+  .matrix-time{flex-basis:49px}
+  .matrix-note{margin-top:4px;padding-top:5px;padding-bottom:5px}
+  html body .matrix-page .matrix-lane.language{flex:1.25!important}
+  html body .matrix-page .matrix-lane.application{flex:1!important}
+  html body .matrix-page.de-master .matrix-lane.language{flex:1.5!important}
+  html body .matrix-page.de-master .matrix-lane.application{flex:.75!important}
+  .custom-timeline-tools{margin-bottom:6px;padding-top:5px;padding-bottom:5px}
+  .custom-mode-switch button{min-height:31px}.custom-edit-button{min-height:35px}
+}
+@media(max-width:1100px) and (min-width:721px) and (max-height:850px){
+  .de-master .matrix-lane.language .course-line{padding:3px!important}
+  .de-master .matrix-lane.language .course-line span{font-size:6px!important}
+  .de-master .matrix-lane.language .course-line b{font-size:7.5px!important}
+  .de-master .matrix-lane.language .course-line em{padding:1px 3px!important;font-size:6.5px!important}
+  .de-master .matrix-lane.application article p{padding:4px 3px!important;font-size:7px!important;line-height:1.25!important}
+}
 .de-master .route-options button{min-width:190px}
 .matrix-page:not(.kr-german-layout) .matrix-scenarios:has(button:nth-child(2):last-child){grid-template-columns:repeat(2,1fr)}
