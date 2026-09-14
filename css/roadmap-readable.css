@@ -122,3 +122,9 @@
   body.plan-mode .matrix-lane{flex:none!important;min-height:0}
   body.plan-mode .matrix-lane article{justify-content:flex-start}
 }
+
+/* Use one slightly taller time band across every desktop roadmap. */
+@media(min-width:721px){
+  body.plan-mode .matrix-time{flex:0 0 60px}
+  body.plan-mode .matrix-time>div{min-height:46px;padding-top:7px;padding-bottom:7px}
+}
