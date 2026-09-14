@@ -13,7 +13,7 @@
       {time:'7—8月',tone:'apply',language:['国内继续学习德语','或先到德国学习德语'],apply:['等待审核结果'],detail:'按语言基础选择学习地点'},
       {time:'9月—次年1月',tone:'apply',language:['继续冲刺德福考试'],apply:['可选择国内继续学习','或先赴德国学习语言'],detail:'根据语言成绩选择方案'},
       {time:'次年4—7月',tone:'milestone',language:['最低考出B2等级','德福通过后持续学习'],apply:['申请德国本科直入'],detail:'同步关注申请截止时间'},
-      {time:'次年8—10月',tone:'milestone',language:['未达德福16分则国内续学','达标后入境德国'],apply:['获签赴德','完成大学注册'],detail:'正式衔接德国本科'}
+      {time:'次年8—10月',tone:'milestone',language:['未达德福16分则继续语言学习，达标后进入专业就读'],apply:['获签赴德','完成大学注册'],detail:'正式衔接德国本科'}
     ]},
     prep:{label:'低于高考满分60%，参加团审项目校考，等预录取',title:'团审项目路径',summary:'低于高考满分60%，参加团审项目校考，等预录取。',later:[
       {time:'7—8月',tone:'apply',language:['继续学习德语'],apply:['参加团审项目校考','等待项目预录取'],detail:'按项目要求准备校考'},
@@ -25,11 +25,11 @@
   };
   const masterItems=[
     {time:'大一上',tone:'language',language:['秋季周末/晚班｜德语 A1｜240课时 · 每周6–10小时','寒假｜复习巩固'],apply:['明确德国硕士方向','保持GPA，建议均分80+']},
-    {time:'大一下',tone:'language',language:['周末/晚班｜德语 A2｜240课时 · 每周6–10小时','暑假全日制｜德语 B1｜180课时 · 约1个月'],apply:['保持GPA并重视课程匹配','参加实习、竞赛或科研']},
-    {time:'大二上',tone:'language',language:['秋季周末/晚班｜德语 B1+｜150课时 · 每周6–10小时','寒假｜复习巩固'],apply:['持续提升GPA与课程匹配']},
-    {time:'大二下',tone:'language',language:['周末/晚班｜德语 B2｜240课时 · 每周6–10小时','暑假全日制｜德福备考｜160课时 · 约20天'],apply:['初步确定院校梯度','评估TestAS / APS面谈路径']},
-    {time:'大三上',tone:'decision',language:['参加首次德福考试','按成绩安排2–3次刷分'],apply:['确定最终院校及专业','规划APS审核时间与方式','确认GRE / GMAT要求']},
-    {time:'大三下及暑假6–8月',tone:'apply',language:['持续德福刷分','按成绩强化，未达标持续备考','目标德福4×4或院校要求'],apply:['推进TestAS / APS面谈','按确认路径推进APS审核','准备硕士申请材料']},
+    {time:'大一下',tone:'language',language:['春季周末/晚班｜德语 A2｜240课时 · 每周6–10小时','暑假｜不安排语言课程'],apply:['保持GPA并重视课程匹配','参加实习、竞赛或科研']},
+    {time:'大二上',tone:'language',language:['秋季周末/晚班｜德语 B1｜180课时 · 每周6–10小时','寒假｜复习巩固'],apply:['持续提升GPA与课程匹配']},
+    {time:'大二下',tone:'language',language:['春季周末/晚班｜德语 B1+｜150课时 · 每周6–10小时','暑假｜复习巩固'],apply:['初步确定院校梯度','评估TestAS / APS面谈路径']},
+    {time:'大三上',tone:'decision',language:['秋季周末/晚班｜德语 B2｜240课时 · 每周6–10小时','寒假｜准备德福考试'],apply:['确定最终院校及专业','规划APS审核时间与方式','确认GRE / GMAT要求']},
+    {time:'大三下及暑假6–8月',tone:'apply',language:['德福备考｜160课时 · 集中学习','参加首次德福考试','按成绩安排后续刷分'],apply:['推进TestAS / APS面谈','按确认路径推进APS审核','准备硕士申请材料']},
     {time:'大四上9–10月',tone:'apply',language:['继续德福 / 歌德考试','考出GRE / GMAT（如要求）'],apply:['补充所需学业材料','同步准备硕士申请']},
     {time:'大四上10月–次年2月',tone:'apply',language:['语言未达标则继续刷分'],apply:['按个人情况完成APS审核','取得APS审核证书','完善选校及申请方案']},
     {time:'大四下3–4月',tone:'apply',language:['准备德福 / 歌德考试','冲刺最终语言成绩'],apply:['开具前7学期成绩单','完善硕士正式申请材料','确定最终院校及专业']},

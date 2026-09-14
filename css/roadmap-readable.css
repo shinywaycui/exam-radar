@@ -127,4 +127,11 @@
 @media(min-width:721px){
   body.plan-mode .matrix-time{flex:0 0 60px}
   body.plan-mode .matrix-time>div{min-height:46px;padding-top:7px;padding-bottom:7px}
+  body.plan-mode .matrix-shell{flex:none;height:auto;min-height:0}
+  body.plan-mode .matrix-lane{flex:none!important;min-height:0}
+  body.plan-mode .matrix-lane article{justify-content:flex-start}
 }
+
+/* Keep the Korean SKY English recommendation visible on every entry path. */
+.kr-compact.kr-german-layout:not(.jp-layout) .matrix-note:after{content:'SKY 申请加分项：申请 SKY 大学可同步学习雅思/托福，本科建议雅思 6.0 或托福 80+。';display:block;margin-top:4px;color:#3959a7;font-weight:800}
+.kr-compact.kr-german-layout.kr-master:not(.jp-layout) .matrix-note:after{content:'SKY 申请加分项：申请 SKY 大学可同步学习雅思/托福，硕士建议雅思 6.5 或托福 90+。'}
