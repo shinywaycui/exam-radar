@@ -23,8 +23,13 @@
     // 报名截止已进入 7 天窗口时，只展示“截止”节点，避免同时出现已经过去的“即将报名”。
     return DateUtils.daysBetween(deadline,today)>7;
   }
+  function isSessionUpdatedToday(session,today){
+    if(DateUtils.isSameDay(session.infoUpdatedAt,today))return true;
+    const version=String(session.dataVersion||'').replace(/\D/g,'');
+    return version.length===8&&version===DateUtils.dateKey(today).replace(/-/g,'');
+  }
   function getTodayRadar(data,today=new Date()){
-    const events=buildExamEvents(data.sessions,data.rules,today).filter(e=>e.eventType!=='出分日期'||e.daysUntil>=-2),todayEvents=events.filter(e=>e.daysUntil===0),todayUpdates=data.sessions.filter(s=>DateUtils.isSameDay(s.infoUpdatedAt,today)).map((s,i)=>({eventId:`${s.recordId}-update`,eventType:'信息更新时间',eventDate:DateUtils.dateKey(today),daysUntil:0,session:s,examName:s.examName,language:s.language,sessionName:s.sessionName,updateType:s.updateType,updateNote:s.updateNote,_order:i}));
+    const events=buildExamEvents(data.sessions,data.rules,today).filter(e=>e.eventType!=='出分日期'||e.daysUntil>=-2),todayEvents=events.filter(e=>e.daysUntil===0),todayRecordIds=new Set(todayEvents.map(e=>e.recordId)),todayUpdates=data.sessions.filter(s=>isSessionUpdatedToday(s,today)&&!todayRecordIds.has(s.recordId)).map((s,i)=>({eventId:`${s.recordId}-update`,eventType:'信息更新时间',eventDate:DateUtils.dateKey(today),daysUntil:0,session:s,examName:s.examName,language:s.language,sessionName:s.sessionName,updateType:s.updateType,updateNote:s.updateNote,_order:i}));
     // 所有首页模块都从最新场次日期重新计算：优先今天和未来节点，只保留最近 7 天的已过节点用于复盘。
     const month=DateUtils.parseExcelDate(today),monthEvents=events.filter(e=>e.year===month.getFullYear()&&e.month===month.getMonth()+1&&e.daysUntil>=-7).map(enrich),nearby=events.filter(e=>e.daysUntil>=0&&e.daysUntil<=31).map(enrich),monthlyFocus=limitGoethe([...monthEvents,...nearby].filter((e,i,a)=>a.findIndex(x=>x.eventId===e.eventId)===i).sort(sortByTiming));
     const upcomingEvents=events.filter(e=>e.daysUntil>0&&e.daysUntil<=7).map(enrich).sort(sortByTiming),momentPool=events.filter(e=>e.daysUntil>=-7&&e.daysUntil<=7).filter(e=>keepMomentsNode(e,today)).map(enrich).sort(sortByTiming),momentsRecommendations=limitGoethe(momentPool.filter(e=>!e.rule||DataNormalizer.isEnabled(e.rule.generateMoments)));
