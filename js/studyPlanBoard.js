@@ -1,6 +1,6 @@
 (function(){
   const scenarios=[['highschool','高中生申请本科','国内普高 · 高一开始规划'],['master','本科申请硕士','大学期间准备']];
-  const countries=[['JP','🇯🇵','日本'],['KR','🇰🇷','韩国'],['DE','🇩🇪','德国']];
+  const countries=[['JP','🇯🇵','日本'],['KR','🇰🇷','韩国'],['DE','🇩🇪','德国'],['FR','🇫🇷','法国'],['IT','🇮🇹','意大利'],['ES','🇪🇸','西班牙']];
   const common=[
     {time:'高一上',tone:'language',language:['秋季周末班｜德语 A1｜240课时','寒假｜复习预习｜每周6—10小时']},
     {time:'高一下',tone:'language',language:['春季周末班｜德语 A2｜240课时','暑假全日制｜德语 B1｜180课时']},
